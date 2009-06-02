@@ -2,7 +2,7 @@
 CLIENT = album.css album.js
 IMAGES = go-next.png go-previous.png movie.jpg
 SERVER = album.php auth.php db.php image.php index.php login.php logout.php \
-	 members.php private.php upload.php
+	 members.php private.php upload.php .htaccess
 TOOLS  = thumbs.sh Makefile
 
 all: install
