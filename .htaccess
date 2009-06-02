@@ -1,0 +1,9 @@
+
+RewriteEngine on
+
+# rewrite album folder names to album.php serving code
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !^$
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^(.*)/$ /album.php?a=$1
+
