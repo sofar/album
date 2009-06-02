@@ -1,0 +1,45 @@
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: #181818;
+	color: #ffffff;
+}
+A:link, A:visited, A:active {
+	color: #ffffff;
+	text-decoration: none;
+}
+A:hover {
+	color: #ffffff;
+	text-decoration: underline;
+}
+img.arrow {
+	border: 0px;
+	vertical-align: text-top;
+}
+img {
+	border-color: #ffffff;
+}
+img.selected {
+	border-width: 8px;
+}
+#preload {
+	display: none;
+}
+#thumbs {
+	padding: 0 0 4px 0;
+	text-align: center;
+}
+#content {
+	text-align: center;
+}       
+#menu_l {
+	float: left;
+}
+#menu_r {
+	float: right;
+}
