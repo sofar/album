@@ -1,5 +1,59 @@
 <?
 
+
+if (!function_exists("imagerotate")) {
+	function imagerotate($src_img, $angle) {
+		$src_x = imagesx($src_img);
+		$src_y = imagesy($src_img);
+		if ($angle == 180) {
+			$dest_x = $src_x;
+			$dest_y = $src_y;
+		}
+		elseif ($src_x <= $src_y) {
+			$dest_x = $src_y;
+			$dest_y = $src_x;
+		}
+		elseif ($src_x >= $src_y) {
+			$dest_x = $src_y;
+			$dest_y = $src_x;
+		}
+       
+		$rotate = imagecreatetruecolor($dest_x,$dest_y);
+		imagealphablending($rotate, false);
+              
+		switch ($angle) {
+		case 270:
+			for ($y = 0; $y < ($src_y); $y++) {
+				for ($x = 0; $x < ($src_x); $x++) {
+					$color = imagecolorat($src_img, $x, $y);
+					imagesetpixel($rotate, $dest_x - $y - 1, $x, $color);
+				}
+			}
+			break;
+		case 90:
+			for ($y = 0; $y < ($src_y); $y++) {
+				for ($x = 0; $x < ($src_x); $x++) {
+					$color = imagecolorat($src_img, $x, $y);
+					imagesetpixel($rotate, $y, $dest_y - $x - 1, $color);
+				}
+			}
+			break;
+		case 180:
+			for ($y = 0; $y < ($src_y); $y++) {
+				for ($x = 0; $x < ($src_x); $x++) {
+					$color = imagecolorat($src_img, $x, $y);
+					imagesetpixel($rotate, $dest_x - $x - 1, $dest_y - $y - 1, $color);
+				}
+			}
+			break;
+		default:
+			$rotate = $src_img;
+		}
+		return $rotate; 
+	}
+}
+
+
 $max_x = 800;
 $max_y = 800;
 $width = $_GET['x'];
@@ -25,20 +79,20 @@ preg_match("'^(.*)\.(gif|jpe?g|png|thm)$'i", $image, $ext);
 # fetch the (already rotated) cached file if present
 if (file_exists($cache_file)) {
 	switch (strtolower($ext[2])) {
-		case 'jpg':
-		case 'jpeg':
-		case 'thm':
-			header("Content-type: image/jpeg");
-			break;
-		case 'gif':
-			header("Content-type: image/gif");
-			break;
-		case 'png':
-			header("Content-type: image/png");
-			break;
-		default:
-			exit;
-			break;
+	case 'jpg':
+	case 'jpeg':
+	case 'thm':
+		header("Content-type: image/jpeg");
+		break;
+	case 'gif':
+		header("Content-type: image/gif");
+		break;
+	case 'png':
+		header("Content-type: image/png");
+		break;
+	default:
+		exit;
+		break;
 	}
 	$fp = fopen($cache_file, "r");
 	fpassthru($fp);
