@@ -9,8 +9,8 @@ do_folder()
 	fi
 
 	cd $1
-	mkdir -p ../.c/$1
-	chmod go+rwx ../.c/$1
+	mkdir -p ../.c/$1 > /dev/null 2>&1
+	chmod go+rwx ../.c/$1 > /dev/null 2>&1
 	for f in *.jpg *.JPG *.jpeg *.JPEG; do
 		if [ ! -f $f ] ; then
 			continue
