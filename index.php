@@ -9,17 +9,18 @@
 <body>
 
 <?
-	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		echo "<div id=\"menu_r\">Logged in as <i>" . $_SERVER['PHP_AUTH_USER'] . "</i> (<a href=\"logout.php\">logout</a></div>\n";
-	} else {
-		echo "<div id=\"menu_r\"><a href=\"login.php\">login</a></div>\n";
-	}
-	echo "<div style=\"text-align: center; width: 100%; padding: 5px;\">\n";
-	echo "<a href=\"/\">index</a>\n";
+#	if (isset($_SERVER['PHP_AUTH_USER'])) {
+#		echo "<div id=\"menu_r\">Logged in as <i>" . $_SERVER['PHP_AUTH_USER'] . "</i> (<a href=\"logout.php\">logout</a></div>\n";
+#	} else {
+#		echo "<div id=\"menu_r\"><a href=\"login.php\">login</a></div>\n";
+#	}
+	echo "<div id=\"title\">\n";
+	echo "    <a href=\"/\">[index]</a>\n";
 	echo "</div>\n";
 	echo "<hr />\n";
+
 	# show list of albums
-	echo "<div style=\"overflow: auto; height: 100%; text-align: center; padding: 5px;\">\n";
+	echo "<div id=\"content\">\n";
 	$dh = opendir(getcwd());
 	while ($entry = readdir($dh)) {
 		if (is_dir($entry) && ($entry != ".") && ($entry != "..") && ($entry != ".c")) {
