@@ -67,8 +67,15 @@ do_folder()
 		if [ -f $t ]; then
 			continue
 		else
-			cp ../movie.jpg $t
 			echo "$1 - $t"
+			set -x
+			# extract frame #1
+			ffmpeg -i $f -ss 0 -vframes 1 -f mjpeg -an $t.tmp > /dev/null 2>&1
+			# and scale it to thumb size
+			convert $t.tmp -resize 100x100 $t
+			rm $t.tmp
+
+			set +x
 		fi
 	done
 
@@ -79,7 +86,7 @@ if [ -n "$1" ] ; then
 	FOLDERS="$@"
 else
 	# might not work for other setups
-	FOLDERS=200*
+	FOLDERS=`ls -ad */`
 fi
 
 if ! jhead -V > /dev/null; then
