@@ -27,8 +27,9 @@ img {
 img.selected {
 	border-width: 8px;
 }
-#preload {
-	display: none;
+
+#title {
+	text-align: center;
 }
 #thumbs {
 	padding: 0 0 4px 0;
@@ -37,6 +38,10 @@ img.selected {
 #content {
 	text-align: center;
 }       
+#preload {
+	display: none;
+}
+
 #menu_l {
 	float: left;
 }
