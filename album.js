@@ -142,5 +142,40 @@ function select(entry) {
 	// and display
 	document.getElementById('content').innerHTML = content;
 	document.location.hash = entry;
+	document.selected = selected;
 }
+
+function keypressed(e) {
+	e = e || window.event;
+
+	var k = e.keyCode || e.which;
+
+	switch(k) {
+	case 78: //left
+	case 32: // space
+	case 39: // right
+		if (document.selected < entries.length - 1)
+			select(entries[document.selected + 1]);
+		break;
+	case 80: // p
+	case 8:  // backspace
+	case 37: // left
+		if (document.selected > 0)
+			select(entries[document.selected - 1]);
+		break;
+	case 38: // up
+		select("all");
+		break;
+	case 40: // down
+		select(entries[document.selected]);
+		break;
+	default:
+		alert(k);
+		break;
+	}
+	
+	return true;
+}
+
+document.onkeydown = keypressed;
 
