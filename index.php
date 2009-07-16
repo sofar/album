@@ -23,7 +23,7 @@
 	echo "<div id=\"content\">\n";
 	$dh = opendir(getcwd());
 	while ($entry = readdir($dh)) {
-		if (is_dir($entry) && ($entry != ".") && ($entry != "..") && ($entry != ".c")) {
+		if (is_dir($entry) && ($entry{0} != ".") ) {
 			if ((!isset($_SERVER['PHP_AUTH_USER'])) &&
 			    file_exists($entry . "/.p"))
 				continue;
