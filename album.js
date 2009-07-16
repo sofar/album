@@ -51,6 +51,7 @@ function select(entry) {
 
 		// Finished constructing the thumbs div
 		document.getElementById('thumbs').innerHTML = thumbs;
+		delete document.selected;
 		return;
 	}
 
@@ -170,7 +171,7 @@ function keypressed(e) {
 		select(entries[document.selected]);
 		break;
 	default:
-		alert(k);
+		//alert(k);
 		break;
 	}
 	
