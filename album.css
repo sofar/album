@@ -18,11 +18,11 @@ A:hover {
 	text-decoration: underline;
 }
 img.arrow {
-	border: 0px;
+	border-width: 0px;
 	vertical-align: text-top;
 }
 img {
-	border-color: #ffffff;
+	border: solid 2px #ffffff;
 }
 img.selected {
 	border-width: 8px;
