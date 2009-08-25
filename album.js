@@ -51,7 +51,7 @@ function select(entry) {
 
 		// Finished constructing the thumbs div
 		document.getElementById('thumbs').innerHTML = thumbs;
-		delete document.selected;
+		document.selected = -1; 
 		return;
 	}
 
@@ -168,7 +168,8 @@ function keypressed(e) {
 		select("all");
 		break;
 	case 40: // down
-		select(entries[document.selected]);
+		if (document.selected > 0)
+			select(entries[document.selected]);
 		break;
 	default:
 		//alert(k);
