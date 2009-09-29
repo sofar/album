@@ -14,6 +14,16 @@
 #	} else {
 #		echo "<div id=\"menu_r\"><a href=\"login.php\">login</a></div>\n";
 #	}
+
+function ctime_cmp_rev($a, $b)
+{
+	if (filemtime($a) > filemtime($b))
+		return -1;
+	else if (filemtime($a) < filemtime($b))
+		return 1;
+	return 0;
+}
+
 	echo "<div id=\"title\">\n";
 	echo "    <a href=\"/\">[index]</a>\n";
 	echo "</div>\n";
@@ -31,7 +41,8 @@
 		}
 	}
 	closedir($dh);
-	rsort($albums);
+	//rsort($albums);
+	usort($albums, "ctime_cmp_rev");
 	
 	echo "<div style=\"display: inline-block;\">\n";
 	foreach ($albums as $entry) {
