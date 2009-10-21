@@ -71,22 +71,15 @@ function select(entry) {
 	for (count = start; count < stop; count++) {
 		// thumbnail this
 		var thumbnailimage = get_thumb_of(entries[count]);
-		thumbs += "<div style=\"display: inline-block; ";
-		if (Math.abs(selected - count) <= 1) {
-			thumbs += "width: 120px; \">";
-		} else {
-			thumbs += "width: 60px; \">";
-		}
 		thumbs += "<a href=\"javascript: select('" + entries[count] + "')\"><img style=\"vertical-align: text-top;\" ";
 		if (selected == count) {
 			thumbs += "class=\"selected\" ";
 		}
 		if (Math.abs(selected - count) <= 1) {
-			thumbs += "src=\"/image.php?r=1&amp;x=100&amp;y=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;";
+			thumbs += "src=\"/image.php?r=1&amp;x=100&amp;y=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
 		} else {
-			thumbs += "src=\"/image.php?r=1&amp;x=50&amp;y=50&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;";
+			thumbs += "src=\"/image.php?r=1&amp;x=50&amp;y=50&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
 		}
-		thumbs += "</div>\n";
 	}
 
 	// fill preload div
@@ -113,8 +106,6 @@ function select(entry) {
 		var center = Math.min(stop + 5, entries.length)
 		thumbs += "<a href=\"javascript: select('" + entries[center - 1] + "');\"><img class=\"arrow\" src=\"/go-next.png\" /></a>\n";
 	}
-	// finish of thumbs with a clear: both;
-	thumbs += "<div style=\"clear: both;\"></div>\n";
 
 	// Finished constructing the thumbs div
 	document.getElementById('thumbs').innerHTML = thumbs;
