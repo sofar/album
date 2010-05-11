@@ -64,9 +64,7 @@ do_folder()
 		t=${t//.mpg/.thm}
 		t=${t//.MPG/.THM}
 
-		if [ -f $t ]; then
-			continue
-		else
+		if [ ! -f $t ]; then
 			echo "$1 - $t"
 			set -x
 			# extract frame #1
@@ -77,9 +75,25 @@ do_folder()
 
 			set +x
 		fi
+
+		# see if we need to convert the file to ogv
+		v=${f//.avi/.ogv}
+		v=${v//.AVI/.OGV}
+		v=${v//.mp4/.ogv}
+		v=${v//.MP4/.OGV}
+
+		if [ ! -f $v ]; then
+			echo "$1 - $v"
+			ffmpeg2theora $f -o $v
+			touch -r $f $v
+			touch -r $f .
+		fi
 	done
+	
+	touch -r $1/$(ls *.[Jj][Pp][Gg] | head -n 1 ) .
 
 	cd ..
+
 }
 
 if [ -n "$1" ] ; then

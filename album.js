@@ -1,5 +1,13 @@
 
 function get_thumb_of(name) {
+	if (name.match(".ogv"))
+		return name.replace(".ogv", ".thm");
+	if (name.match(".OGV"))
+		return name.replace(".OGV", ".THM");
+	if (name.match(".mp4"))
+		return name.replace(".mp4", ".thm");
+	if (name.match(".MP4"))
+		return name.replace(".MP4", ".THM");
 	if (name.match(".avi"))
 		return name.replace(".avi", ".thm");
 	if (name.match(".AVI"))
@@ -95,6 +103,12 @@ function select(entry) {
 	}
 
 	if ((selected + 1) < entries.length) {
+		if (!(entry.match(".ogv") || entry.match(".OGV"))) {
+			preload += "<img src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
+		}
+		if (!(entry.match(".mp4") || entry.match(".MP4"))) {
+			preload += "<img src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
+		}
 		if (!(entry.match(".avi") || entry.match(".AVI"))) {
 			preload += "<img src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
 		}
@@ -127,9 +141,13 @@ function select(entry) {
 	}
 
 	// display selected image
-	if (entry.match(".avi") || entry.match(".AVI")) {
+	if (entry.match(".mp4") || entry.match(".MP4")) {
 		// Video display
-		content += "<embed autoplay=\"true\" autostart=\"true\" uimode=\"true\" type=\"application/x-mplayer2\" id=\"MediaPlayer\" src=\"/" + album + "/" + entry + "\" style=\"visibility: visible;\" height=\"480\" width=\"640\" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/\">\n";
+		content += "<video controls><source src=\"" + album + "/" + entry + "\" type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'></video>";
+	} else if ( entry.match(".ogv") || entry.match(".OGV")) {
+		// Video display
+		content += "<video controls><source src=\"/" + album + "/" + entry + "\" type='video/ogg; codecs=\"theora, vorbis\"'></video>";
+		content += "<h6>This video is Ogg/Theora encoded. You'll have to use Firefox or Chrome to watch this video</h6>";
 	} else {
 		// image display
 		content += "<img class=\"selected\" usemap=\"#map-" + entry + "\" title=\'" + titles[selected] + "\' src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entry + "\" />\n";

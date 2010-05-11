@@ -14,6 +14,10 @@
 	while ($entry = readdir($dh)) {
 		if (!is_file($album . "/" . $entry))
 			continue;
+		if (preg_match('/avi/', $entry))
+			continue;
+		if (preg_match('/AVI/', $entry))
+			continue;
 		if (preg_match('/thm/', $entry))
 			continue;
 		if (preg_match('/THM/', $entry))

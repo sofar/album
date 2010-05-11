@@ -5,5 +5,6 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteCond %{REQUEST_URI} !^$
 RewriteCond %{REQUEST_URI} !^/$
+RewriteCond %{REQUEST_URI} !^/[.]usage
 RewriteRule ^(.*)/$ /album.php?a=$1
 
