@@ -53,6 +53,12 @@ do_folder()
 		if [ -n "$PRINT" ]; then
 			echo
 		fi
+
+		# DT=$(jhead $f | cut -d: -f2-)
+		if [ . -nt $f ]; then
+			echo "touch -r $f ."
+			touch -r $f .
+		fi
 	done
 
 	for f in *.avi *.AVI *.mpg *.MPG; do
@@ -84,13 +90,13 @@ do_folder()
 
 		if [ ! -f $v ]; then
 			echo "$1 - $v"
-			ffmpeg2theora $f -o $v
+			~sofar/bin/ffmpeg2theora $f -o $v
 			touch -r $f $v
 			touch -r $f .
 		fi
 	done
 	
-	touch -r $1/$(ls *.[Jj][Pp][Gg] | head -n 1 ) .
+	touch -r $(ls *.[Jj][Pp][Gg] | head -n 1 ) .
 
 	cd ..
 
