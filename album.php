@@ -63,8 +63,11 @@
 		$title .= "ExposureTime:&nbsp;&quot;" . $exif['EXIF']['ExposureTime'] . "&quot;, ";
 		$title .= "FNumber:&nbsp;&quot;" . $exif['EXIF']['FNumber'] . "&quot;, ";
 		if (array_key_exists('ISOSpeedRatings', $exif['EXIF']))
-			$title .= "ISOSpeedRatings: &quot;" . $exif['EXIF']['ISOSpeedRatings'] . "&quot;, ";
-		$title .= "Comment:&nbsp;&quot;" . preg_replace('/[^[:print:]]/', '', $exif['EXIF']['UserComment']) . "&quot;";
+			$title .= "ISOSpeedRatings:&nbsp;&quot;" . $exif['EXIF']['ISOSpeedRatings'] . "&quot;, ";
+		if (array_key_exists('Orientation', $exif['IFD0']))
+			$title .= "Orientation:&nbsp;&quot;" . $exif['IFD0']['Orientation'] . "&quot;, ";
+		if (array_key_exists('UserComment', $exif['EXIF']))
+			$title .= "Comment:&nbsp;&quot;" . preg_replace('/[^[:print:]]/', '', $exif['EXIF']['UserComment']) . "&quot;";
 		echo "	'" . $title . "'";
 
 		if ($entry != $items[count($items) - 1])
