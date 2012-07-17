@@ -66,7 +66,7 @@ $image = $_GET['i'];
 $album = dirname($image);
 
 $cache_path = ".c/" . $album;
-$cache_file = $cache_path . "/" . $witdh . "x" . $height . "-" . basename($image);
+$cache_file = $cache_path . "/" . $width . "x" . $height . "-" . basename($image);
 
 if (!is_dir($cache_path))
 	mkdir($cache_path);
@@ -105,7 +105,14 @@ if (file_exists($cache_file)) {
 #$o= shell_exec("jhead -exifmap " . escapeshellcmd($image) . " | grep ^Orientation | cut -d: -f2");
 #$o = shell_exec("/usr/bin/exif-orientation.sh " . escapeshellcmd($image));
 $exif = exif_read_data($image, 0, true);
-$o = $exif['IFD0']['Orientation'];
+$o = 0;
+if (is_array($exif)) {
+	if (array_key_exists('IFD0', $exif)) {
+		if (array_key_exists('Orientation', $exif['IFD0'])) {
+			$o = $exif['IFD0']['Orientation'];
+		}
+	}
+}
 
 switch (strtolower($ext[2])) {
 case 'jpg':

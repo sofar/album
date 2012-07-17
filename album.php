@@ -54,8 +54,8 @@
 		$title = "EXIF data from &quot;" . $album . "/" . $entry . "&quot;:&nbsp;";
 		$title .= "Filename: &quot;" . $exif['FILE']['FileName'] . "&quot;, &nbsp;";
 		$title .= "DateTime: &quot;" . $exif['IFD0']['DateTime'] . "&quot;, &nbsp;";
-		$title .= "ExifImageWidth: &quot;" . $exif['EXIF']['ExifImageWidth'] . "&quot;, &nbsp;";
-		$title .= "ExifImageLength: &quot;" . $exif['EXIF']['ExifImageLength'] . "&quot;, &nbsp;";
+		#$title .= "ExifImageWidth: &quot;" . $exif['EXIF']['ExifImageWidth'] . "&quot;, &nbsp;";
+		#$title .= "ExifImageLength: &quot;" . $exif['EXIF']['ExifImageLength'] . "&quot;, &nbsp;";
 		$title .= "Camera Make: &quot;" . $exif['IFD0']['Make'] . "&quot;, &nbsp;";
 		$title .= "Camera Model: &quot;" . $exif['IFD0']['Model'] . "&quot;, &nbsp;";
 		$title .= "ExposureTime: &quot;" . $exif['EXIF']['ExposureTime'] . "&quot;, &nbsp;";
@@ -77,9 +77,13 @@
 </head>
 
 <?
-	$anchor = $_GET['s'];
-	if ($anchor != "") {
-		$select = $anchor;
+	if (isset($_GET['s'])) {
+		$anchor = $_GET['s'];
+		if ($anchor != "") {
+			$select = $anchor;
+		} else {
+			$select = $items[0];
+		}
 	} else {
 		$select = $items[0];
 	}
