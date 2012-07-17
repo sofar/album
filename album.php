@@ -51,20 +51,20 @@
 			continue;
 		}
 		$exif = exif_read_data($album . "/" . $entry, 0, true);
-		$title = "EXIF data from &quot;" . $album . "/" . $entry . "&quot;:&nbsp;";
-		$title .= "Filename: &quot;" . $exif['FILE']['FileName'] . "&quot;, &nbsp;";
-		$title .= "DateTime: &quot;" . $exif['IFD0']['DateTime'] . "&quot;, &nbsp;";
+		$title = "EXIF&nbsp;data&nbsp;from&nbsp;&quot;" . $album . "/" . $entry . "&quot;: ";
+		$title .= "Filename:&nbsp;&quot;" . $exif['FILE']['FileName'] . "&quot;, ";
+		$title .= "DateTime:&nbsp;&quot;" . $exif['IFD0']['DateTime'] . "&quot;, ";
 		if (array_key_exists('ExifImageWidth', $exif['EXIF']))
-			$title .= "ExifImageWidth: &quot;" . $exif['EXIF']['ExifImageWidth'] . "&quot;, &nbsp;";
+			$title .= "ExifImageWidth:&nbsp;&quot;" . $exif['EXIF']['ExifImageWidth'] . "&quot;, ";
 		if (array_key_exists('ExifImageLength', $exif['EXIF']))
-			$title .= "ExifImageLength: &quot;" . $exif['EXIF']['ExifImageLength'] . "&quot;, &nbsp;";
-		$title .= "Camera Make: &quot;" . $exif['IFD0']['Make'] . "&quot;, &nbsp;";
-		$title .= "Camera Model: &quot;" . $exif['IFD0']['Model'] . "&quot;, &nbsp;";
-		$title .= "ExposureTime: &quot;" . $exif['EXIF']['ExposureTime'] . "&quot;, &nbsp;";
-		$title .= "FNumber: &quot;" . $exif['EXIF']['FNumber'] . "&quot;, &nbsp;";
+			$title .= "ExifImageLength:&nbsp;&quot;" . $exif['EXIF']['ExifImageLength'] . "&quot;, ";
+		$title .= "Camera&nbsp;Make:&nbsp;&quot;" . $exif['IFD0']['Make'] . "&quot;, ";
+		$title .= "Camera&nbsp;Model:&nbsp;&quot;" . $exif['IFD0']['Model'] . "&quot;, ";
+		$title .= "ExposureTime:&nbsp;&quot;" . $exif['EXIF']['ExposureTime'] . "&quot;, ";
+		$title .= "FNumber:&nbsp;&quot;" . $exif['EXIF']['FNumber'] . "&quot;, ";
 		if (array_key_exists('ISOSpeedRatings', $exif['EXIF']))
-			$title .= "ISOSpeedRatings: &quot;" . $exif['EXIF']['ISOSpeedRatings'] . "&quot;, &nbsp;";
-		$title .= "Comment: &quot;" . preg_replace('/[^[:print:]]/', '', $exif['EXIF']['UserComment']) . "&quot;";
+			$title .= "ISOSpeedRatings: &quot;" . $exif['EXIF']['ISOSpeedRatings'] . "&quot;, ";
+		$title .= "Comment:&nbsp;&quot;" . preg_replace('/[^[:print:]]/', '', $exif['EXIF']['UserComment']) . "&quot;";
 		echo "	'" . $title . "'";
 
 		if ($entry != $items[count($items) - 1])
