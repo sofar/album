@@ -183,11 +183,14 @@ function keypressed(e) {
 			select(entries[document.selected - 1]);
 		break;
 	case 38: // up
+		document.getElementById('content').innerHTML = "<br />";
 		select("all");
 		break;
 	case 40: // down
 		if (document.selected > 0)
 			select(entries[document.selected]);
+		else
+			select(entries[0]);
 		break;
 	default:
 		//alert(k);
