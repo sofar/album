@@ -56,7 +56,7 @@ function ctime_cmp_rev($a, $b)
 				$thumb = preg_replace('|x100-|', '', $thumb);
 				echo "      <div style=\"display: inline-block; float: left; height: 120px; width: 120px; line-height: 120px;\">";
 				echo "      <a href=\"$entry/#$thumb\">";
-				echo "<img style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;x=100&amp;y=100&amp;i=$entry/$thumb\" /></a></div>\n";
+				echo "<img style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=$entry/$thumb\" /></a></div>\n";
 				$n++;
 				if ($n >= 4)
 					break;

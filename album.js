@@ -53,7 +53,7 @@ function select(entry) {
 			thumbs += "<div style=\"float: left; height: 120px; width: 120px;\"><a href=\"javascript: select('" + entries[count] + "')\">";
 // doesn't work because backrefs are broken atm
 // thumbs += "<div style=\"float: left; height: 120px; width: 120px;\"><a href=\"/" + album + "/#" + entries[count] + "\">";
-			thumbs += "<img style=\"vertical-align: middle;\" src=\"/image.php?r=1&amp;x=100&amp;y=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n</div>\n";
+			thumbs += "<img style=\"vertical-align: middle;\" src=\"/image.php?r=1&amp;s=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n</div>\n";
 		}
 		thumbs += "</div>\n";
 
@@ -84,9 +84,9 @@ function select(entry) {
 			thumbs += "class=\"selected\" ";
 		}
 		if (Math.abs(selected - count) <= 1) {
-			thumbs += "src=\"/image.php?r=1&amp;x=100&amp;y=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
+			thumbs += "src=\"/image.php?r=1&amp;s=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
 		} else {
-			thumbs += "src=\"/image.php?r=1&amp;x=50&amp;y=50&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
+			thumbs += "src=\"/image.php?r=1&amp;s=50&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
 		}
 	}
 
@@ -94,23 +94,23 @@ function select(entry) {
 	var preload = "";
 	if (stop < entries.length) {
 		var thumbnailimage = get_thumb_of(entries[stop]);
-		preload += "<img src=\"/image.php?r=1&amp;x=50&amp;y=50&amp;i=" + album + "/" + thumbnailimage + "\" />\n";
+		preload += "<img src=\"/image.php?r=1&amp;s=50&amp;i=" + album + "/" + thumbnailimage + "\" />\n";
 	}
 
 	if (selected + 2 < entries.length) {
 		var thumbnailimage = get_thumb_of(entries[selected + 2]);
-		preload += "<img src=\"/image.php?r=1&amp;x=100&amp;y=100&amp;i=" + album + "/" + thumbnailimage + "\" />\n";
+		preload += "<img src=\"/image.php?r=1&amp;s=100&amp;i=" + album + "/" + thumbnailimage + "\" />\n";
 	}
 
 	if ((selected + 1) < entries.length) {
 		if (!(entry.match(".ogv") || entry.match(".OGV"))) {
-			preload += "<img src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
+			preload += "<img src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
 		}
 		if (!(entry.match(".mp4") || entry.match(".MP4"))) {
-			preload += "<img src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
+			preload += "<img src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
 		}
 		if (!(entry.match(".avi") || entry.match(".AVI"))) {
-			preload += "<img src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
+			preload += "<img src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
 		}
 	}
 	document.getElementById('preload').innerHTML = preload;
@@ -150,7 +150,7 @@ function select(entry) {
 		content += "<h6>This video is Ogg/Theora encoded. You'll have to use Firefox or Chrome to watch this video</h6>";
 	} else {
 		// image display
-		content += "<img class=\"selected\" usemap=\"#map-" + entry + "\" title=\'" + titles[selected] + "\' src=\"/image.php?r=1&amp;x=800&amp;y=800&amp;i=" + album + "/" + entry + "\" />\n";
+		content += "<img class=\"selected\" usemap=\"#map-" + entry + "\" title=\'" + titles[selected] + "\' src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entry + "\" />\n";
 	}
 
 	if (selected + 1 < entries.length)

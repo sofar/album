@@ -17,10 +17,10 @@ if (!function_exists("imagerotate")) {
 			$dest_x = $src_y;
 			$dest_y = $src_x;
 		}
-       
+
 		$rotate = imagecreatetruecolor($dest_x,$dest_y);
 		imagealphablending($rotate, false);
-              
+
 		switch ($angle) {
 		case 270:
 			for ($y = 0; $y < ($src_y); $y++) {
@@ -54,10 +54,12 @@ if (!function_exists("imagerotate")) {
 }
 
 
-$max_x = 800;
-$max_y = 800;
-$width = $_GET['x'];
-$height = $_GET['y'];
+$max_size = 800;
+
+$size = $_GET['s'];
+
+if ($size > $max_size)
+	$size = $max_size;
 
 $resample = $_GET['r'];
 
@@ -66,7 +68,8 @@ $image = $_GET['i'];
 $album = dirname($image);
 
 $cache_path = ".c/" . $album;
-$cache_file = $cache_path . "/" . $width . "x" . $height . "-" . basename($image);
+$cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
+# FIXME we should size to one dimension, not x-y, just s(ize)
 
 if (!is_dir($cache_path))
 	mkdir($cache_path);
@@ -101,9 +104,6 @@ if (file_exists($cache_file)) {
 }
 
 
-# $o= shell_exec("identify -format \"%[EXIF:Orientation]\" ". escapeshellcmd($image));
-#$o= shell_exec("jhead -exifmap " . escapeshellcmd($image) . " | grep ^Orientation | cut -d: -f2");
-#$o = shell_exec("/usr/bin/exif-orientation.sh " . escapeshellcmd($image));
 $exif = exif_read_data($image, 0, true);
 $o = 0;
 if (is_array($exif)) {
@@ -138,10 +138,12 @@ list($width_orig, $height_orig) = getimagesize($image);
 
 $ratio_orig = $width_orig / $height_orig;
 
-if ($width/$height > $ratio_orig) {
-	$width = $height * $ratio_orig;
+if ($ratio_orig > 1) {
+	$width = $size;
+	$height = $size / $ratio_orig;
 } else {
-	$height = $width / $ratio_orig;
+	$width = $size * $ratio_orig;
+	$height = $size;
 }
 
 $save = imagecreatetruecolor($width, $height);

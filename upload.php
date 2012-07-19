@@ -63,7 +63,7 @@
 					move_uploaded_file($tmp_name, "$album/$name");
 
 					# display this image as a preview thumb
-					echo "<p>Uploaded \"$name\" OK! <img src=\"image.php?r=1&amp;x=100&amp;y=100&amp;i=$album/$name\" /></p>\n";
+					echo "<p>Uploaded \"$name\" OK! <img src=\"image.php?r=1&amp;s=100&amp;i=$album/$name\" /></p>\n";
 				}
 			}
 		}
