@@ -113,7 +113,6 @@ function select(a, i) {
 			if (y % 5 == 4)
 				c += "<div style=\"clear: both;\"></div>\n";
 		}
-		c += "<div style=\"clear: both;\"></div>\n";
 		c += "</div>";
 		if (last_album_section + 1 < (albums[x].images.length - 1) / 25)
 			c += block(">");
