@@ -1,4 +1,16 @@
 
+// sort albums reverse - newest ones come first
+albums.sort(function(a, b) { return (a.name < b.name); });
+// sort images normal order
+for (x = 0; x < albums.length - 1; x++)
+	albums[x].images.sort(function(a, b) { return(a.name > b.name); });
+
+var last = "";
+var last_album = "";
+var last_image = "";
+var last_index_section = 0;
+var last_album_section = 0;
+
 function get_thumb_of(name) {
 	if (name.match(".ogv"))
 		return name.replace(".ogv", ".thm");
@@ -15,153 +27,167 @@ function get_thumb_of(name) {
 	return name;
 }
 
-var hash = null;
-
-function anchor() {
-	var anchor;
-
-	if (hash != document.location.hash) {
-		// store complete hash including #
-		hash = document.location.hash;
-		// but strip # for anchor part to pass to select()
-		anchor = hash.substring(1);
-		// when opening from the index, assume no anchor
-		if (hash == "")
-			anchor = "all"; //entries[0];
-	} else {
-		anchor = "all"; //entries[0];
-	}
-
-	return anchor;
+function find_album(a) {
+	for (x = 0; x < albums.length - 1; x++)
+		if (albums[x].name == a)
+			return x;
+	return -1;
 }
 
-function select(entry) {
-	var selected = 0;
+function find_image(x, i) {
+	for (y = 0; y < albums[x].images.length - 1; y++)
+		if (albums[x].images[y].name == i)
+			return y;
+	return -1;
+}
 
-	for (count = 0; count < entries.length; count++)
-		if (entry == entries[count])
-			selected = count;
-	
-	// are we looking at an album index?
-	if (entry == "all") {
-		var thumbs = "<div style=\"display: inline-block; text-align: center; line-height: 120px;\">\n";
-		// paint all the thumbnails
-		for (count = 0; count < entries.length; count++) {
-			var thumbnailimage = get_thumb_of(entries[count]);
-			if ((count % 5) == 0)
-				thumbs += "<div style=\"clear: both;\"></div>\n";
-			thumbs += "<div style=\"float: left; height: 120px; width: 120px;\"><a href=\"javascript: select('" + entries[count] + "')\">";
-// doesn't work because backrefs are broken atm
-// thumbs += "<div style=\"float: left; height: 120px; width: 120px;\"><a href=\"/" + album + "/#" + entries[count] + "\">";
-			thumbs += "<img style=\"vertical-align: middle;\" src=\"/image.php?r=1&amp;s=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n</div>\n";
+function block(b) {
+	var r = "<div style=\"display: inline-block; float: left; height: 120px; width: 120px; line-height: 120px;\">" +
+		b +
+		"</div>\n";
+	return r;
+}
+
+function thumb(a, i, s) {
+	var r = "<a href=\"javascript:select(&quot;" + albums[a].name + "&quot;, &quot;" + albums[a].images[i].name  + "&quot;)\">" +
+		"<img ";
+	if (s != 0)
+		r += "class=\"selected\" ";
+	r += " ) + style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + get_thumb_of(albums[a].images[i].name) +"\" /></a>";
+	return block(r);
+}
+
+function select(a, i) {
+
+	if (a == "") {
+		// display album list
+		var c = "";
+
+		// calculate which section to display
+		var s_start = Math.min((last_index_section * 10), Math.min((albums.length - 1) / 10) * 10);
+		var s_end = Math.min(s_start + 10, (albums.length - 1));
+
+		c += "<div style=\"display: inline-block;\">\n";
+		for (x = s_start; x < s_end; x++) {
+			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(&quot;" + albums[x].name + "&quot, &quot;&quot;)\">" + albums[x].name + "</a></div>\n";
+			c += "<div style=\"clear: both;\"></div>\n";
+			for (y = 0; y < Math.min(5, albums[x].images.length - 1); y++) {
+				c += thumb(x, y, 0);
+			}
+			c += "<div style=\"clear: both;\"></div>\n";
 		}
-		thumbs += "</div>\n";
+		c += "</div>\n";
 
-		// Finished constructing the thumbs div
-		document.getElementById('thumbs').innerHTML = thumbs;
-		document.selected = -1; 
+		document.getElementById('content').innerHTML = c;
+
+		var t = "";
+		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
+		t += "( " + (s_start + 1) + " - " + s_end + " / " + (albums.length - 1) + " )\n";
+
+		document.getElementById('title').innerHTML = t;
+
+		last = "index";
+
+		return;
+	} else if (i == "") {
+		// display album overview page
+		var c = "";
+		var x = find_album(a);
+
+		// calculate which section to display
+		if (last_album != a)
+			last_album_section = 0;
+		var s_start = Math.min((last_album_section * 25), Math.min((albums[x].images.length - 1) / 25) * 25);
+		var s_end = Math.min(s_start + 25, (albums[x].images.length - 1));
+
+		c += "<div style=\"display: inline-block;\">\n";
+		if (last_album_section > 0)
+			c += block("<");
+		else
+			c += block("&nbsp;");
+		c += "<div style=\"display: inline-block;\">\n";
+		for (y = s_start; y < s_end; y++ ) {
+			if (y % 5 == 0)
+				c += "<div style=\"float: left; height: 120px; width: 0px; display: table-cell; line-height: 120px; vertical-align: middle;\"></div>\n";
+			c += thumb(x, y, 0);
+			if (y % 5 == 4)
+				c += "<div style=\"clear: both;\"></div>\n";
+		}
+		c += "<div style=\"clear: both;\"></div>\n";
+		c += "</div>";
+		if (last_album_section + 1 < (albums[x].images.length - 1) / 25)
+			c += block(">");
+		else
+			c += block("&nbsp;");
+		c += "</div>";
+
+		document.getElementById('content').innerHTML = c;
+
+		var t = "";
+		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
+		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
+		t += "( " + (s_start + 1) + " - " + s_end + " / " + (albums[x].images.length - 1) + " )\n";
+
+		document.getElementById('title').innerHTML = t;
+
+		last_album = albums[x].name;
+		last = "album";
+
+		return;
+	} else {
+		// display image
+		var c = "";
+		var x = find_album(a);
+		var y = find_image(x, i);
+
+		// navigation
+		c += "<div id=\"navigation\" style=\"display: inline-block;\">\n";
+		if (y > 4)
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-4].name + "&quot;)\">&lt;</a>");
+		else
+			c += block("&nbsp;");
+		for (z = Math.max(0, y - 4); z <= Math.min(y + 4, albums[x].images.length - 2); z++) {
+			c += thumb(x, z, (z == y));
+		}
+		if (y <= albums[x].images.length - 6)
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\">&gt;</a>");
+		else
+			c += block("&nbsp;");
+		c += "</div>\n";
+		c += "<div style=\"clear: both;\"></div>\n";
+
+		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
+		if (y > 0)
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-1].name + "&quot;)\">&lt;</a>");
+		else
+			c += block("&nbsp;");
+		c += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
+		c += "<img class=\"selected\" src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + albums[x].images[y].name + "\"/>";
+		c += "</div>\n";
+		if (y <= albums[x].images.length - 2)
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\">&gt;</a>");
+		else
+			c += block("&nbsp;");
+		c += "<div style=\"clear: both;\"></div>\n";
+
+		c += "</div>\n";
+
+		document.getElementById('content').innerHTML = c;
+
+		var t = "";
+		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
+		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
+		t += "<a href=\"/" + albums[x].name + "/" + albums[x].images[y].name + "\">[" + albums[x].images[y].name + "]</a>&nbsp;";
+		t += "( " + (y + 1) + " / " + (albums[x].images.length - 1) + " )\n";
+
+		document.getElementById('title').innerHTML = t;
+
+		last_album = albums[x].name;
+		last_image = albums[x].images[y].name;
+		last = "image";
+
 		return;
 	}
-
-	// determine the range over 9 images to show
-	var start = Math.max(selected - 4, 0);
-	start = Math.min(start, Math.max(0, entries.length - 9));
-	var stop = Math.min(start + 9, entries.length);
-
-	// links to previous 9 images in the thumbs index
-	var thumbs = "";
-	if (start > 0) {
-		var center = Math.max(selected - 9, 0);
-		thumbs += "<a href=\"javascript: select('" + entries[center] + "');\"><img class=\"arrow\" src=\"/go-previous.png\" /></a>\n";
-	}
-
-	// show images start -> stop and put "entry" in display box
-	for (count = start; count < stop; count++) {
-		// thumbnail this
-		var thumbnailimage = get_thumb_of(entries[count]);
-		thumbs += "<a href=\"javascript: select('" + entries[count] + "')\"><img style=\"vertical-align: text-top;\" ";
-		if (selected == count) {
-			thumbs += "class=\"selected\" ";
-		}
-		if (Math.abs(selected - count) <= 1) {
-			thumbs += "src=\"/image.php?r=1&amp;s=100&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
-		} else {
-			thumbs += "src=\"/image.php?r=1&amp;s=50&amp;i=" + album + "/" + thumbnailimage + "\" /></a>&nbsp;\n";
-		}
-	}
-
-	// fill preload div
-	var preload = "";
-	if (stop < entries.length) {
-		var thumbnailimage = get_thumb_of(entries[stop]);
-		preload += "<img src=\"/image.php?r=1&amp;s=50&amp;i=" + album + "/" + thumbnailimage + "\" />\n";
-	}
-
-	if (selected + 2 < entries.length) {
-		var thumbnailimage = get_thumb_of(entries[selected + 2]);
-		preload += "<img src=\"/image.php?r=1&amp;s=100&amp;i=" + album + "/" + thumbnailimage + "\" />\n";
-	}
-
-	if ((selected + 1) < entries.length) {
-		if (!(entry.match(".ogv") || entry.match(".OGV"))) {
-			preload += "<img src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
-		}
-		if (!(entry.match(".mp4") || entry.match(".MP4"))) {
-			preload += "<img src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
-		}
-		if (!(entry.match(".avi") || entry.match(".AVI"))) {
-			preload += "<img src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entries[selected + 1] + "\" />\n";
-		}
-	}
-	document.getElementById('preload').innerHTML = preload;
-
-	// links to next 9 images in the thumbs index
-	if (stop < entries.length) {
-		var center = Math.min(stop + 5, entries.length)
-		thumbs += "<a href=\"javascript: select('" + entries[center - 1] + "');\"><img class=\"arrow\" src=\"/go-next.png\" /></a>\n";
-	}
-
-	// Finished constructing the thumbs div
-	document.getElementById('thumbs').innerHTML = thumbs;
-
-	var content = "\n";
-
-	// construct the map
-	content += "<map name=\"map-" + entry + "\">\n";
-	if (selected > 0) {
-		content += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select('" + entries[selected - 1] + "')\" />\n";
-	}
-	if (selected < (entries.length - 1)) {
-		content += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select('" + entries[selected + 1] + "')\" />\n";
-	}
-	content += "</map>\n";
-	
-	if (selected > 0) {
-		content += "<a href=\"javascript: select('" + entries[selected - 1]+ "');\"><img class=\"arrow\" src=\"/go-previous.png\" /></a>\n";
-	}
-
-	// display selected image
-	if (entry.match(".mp4") || entry.match(".MP4")) {
-		// Video display
-		content += "<video controls><source src=\"" + album + "/" + entry + "\" type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'></video>";
-	} else if ( entry.match(".ogv") || entry.match(".OGV")) {
-		// Video display
-		content += "<video controls><source src=\"/" + album + "/" + entry + "\" type='video/ogg; codecs=\"theora, vorbis\"'></video>";
-		content += "<h6>This video is Ogg/Theora encoded. You'll have to use Firefox or Chrome to watch this video</h6>";
-	} else {
-		// image display
-		content += "<img class=\"selected\" usemap=\"#map-" + entry + "\" title=\'" + titles[selected] + "\' src=\"/image.php?r=1&amp;s=800&amp;i=" + album + "/" + entry + "\" />\n";
-	}
-
-	if (selected + 1 < entries.length)
-		content += "<a href=\"javascript: select('" + entries[selected + 1] + "');\"><img class=\"arrow\" src=\"/go-next.png\" /></a>\n";
-
-	content += "<br />\n" + album + " / " + "<a href=\"/" + album + "/" + entry + "\">" + entry + "</a>\n";
-
-	// and display
-	document.getElementById('content').innerHTML = content;
-	document.location.hash = entry;
-	document.selected = selected;
 }
 
 function keypressed(e) {
@@ -169,31 +195,87 @@ function keypressed(e) {
 
 	var k = e.keyCode || e.which;
 
+	// FIXME: home/end should be usable too.
+
 	switch(k) {
-	case 78: //left
+	case 33: // pgup
+		if (last == "image") {
+			var x = find_album(last_album);
+			var y = find_image(x, last_image);
+			select(last_album, albums[x].images[Math.max(0, y - 5)].name);
+		} else if (last == "album") {
+			if (last_album_section > 0) {
+				last_album_section--;
+				select(last_album, "");
+			}
+		} else {
+			if (last_index_section > 0) {
+				last_index_section--;
+				select("", "");
+			}
+		}
+		break;
+	case 34: // pgdn
+		if (last == "image") {
+			var x = find_album(last_album);
+			var y = find_image(x, last_image);
+			select(last_album, albums[x].images[Math.min( y + 5, albums[x].images.length - 2)].name);
+		} else if (last == "album") {
+			var x = find_album(last_album);
+			if (last_album_section < Math.floor((albums[x].images.length - 2) / 25)) {
+				last_album_section++;
+				select(last_album, "");
+			}
+		} else {
+			var x = find_album(last_album);
+			if (last_index_section < Math.floor((albums.length - 1) / 10)) {
+				last_index_section++;
+				select("", "");
+			}
+		}
+		break;
+	case 78: // n
 	case 32: // space
 	case 39: // right
-		if (document.selected < entries.length - 1)
-			select(entries[document.selected + 1]);
+		if (last == "image") {
+			var x = find_album(last_album);
+			var y = find_image(x, last_image);
+			if (y < albums[x].images.length - 2)
+				select(last_album, albums[x].images[y+1].name);
+		}
 		break;
 	case 80: // p
 	case 8:  // backspace
 	case 37: // left
-		if (document.selected > 0)
-			select(entries[document.selected - 1]);
+		if (last == "image") {
+			var x = find_album(last_album);
+			var y = find_image(x, last_image);
+			if (y > 0)
+				select(last_album, albums[x].images[y-1].name);
+		}
 		break;
+	case 85: // u
 	case 38: // up
-		document.getElementById('content').innerHTML = "<br />";
-		select("all");
+		if (last == "image") {
+			last = "album";
+			select(last_album, "");
+		} else {
+			last = "index";
+			select("", "");
+		}
 		break;
+	case 68: // d
 	case 40: // down
-		if (document.selected > 0)
-			select(entries[document.selected]);
-		else
-			select(entries[0]);
+		if (last == "index") {
+			last = "album";
+			select(last_album, "");
+		} else {
+			last = "image";
+			select(last_album, last_image);
+		}
 		break;
 	default:
-		//alert(k);
+		// alert(k);
 		break;
 	}
 	
@@ -201,4 +283,8 @@ function keypressed(e) {
 }
 
 document.onkeydown = keypressed;
+
+function init() {
+	select("", "");
+}
 
