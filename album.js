@@ -5,6 +5,8 @@ var last_album = "";
 var last_image = "";
 var last_index_section = 0;
 var last_album_section = 0;
+var slideshow = false;
+var slideshowinterval;
 
 function get_thumb_of(name) {
 	if (name.match(".ogv"))
@@ -222,6 +224,15 @@ function select(a, i) {
 	}
 }
 
+function run_slideshow() {
+	var x = find_album(last_album);
+	var y = find_image(x, last_image);
+	if (y < albums[x].images.length - 2)
+		select(last_album, albums[x].images[y+1].name);
+	else
+		select(last_album, albums[x].images[0].name);
+}
+
 function keypressed(e) {
 	e = e || window.event;
 
@@ -349,6 +360,17 @@ function keypressed(e) {
 		} else {
 			last = "image";
 			select(last_album, last_image);
+		}
+		break;
+	case 83: // s
+		if (slideshow) {
+			slideshow = false;
+			window.clearInterval(slideshowinterval);
+		} else {
+			if (last == "image") {
+				slideshow = true;
+				slideshowinterval = window.setInterval(run_slideshow, 5000);
+			}
 		}
 		break;
 	default:
