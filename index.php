@@ -23,6 +23,18 @@
 		while ($image = readdir($ih)) {
 			if (!is_file(getcwd() . "/" . $album . "/" . $image))
 				continue;
+			if (preg_match('/[.]avi$/', $image))
+				continue;
+			if (preg_match('/[.]AVI$/', $image))
+				continue;
+			if (preg_match('/[.]thm$/', $image))
+				continue;
+			if (preg_match('/[.]THM$/', $image))
+				continue;
+			if (preg_match('/[.]nef$/', $image))
+				continue;
+			if (preg_match('/[.]NEF$/', $image))
+				continue;
 			echo "{ name: '" . $image . "' }, ";
 		}
 		closedir($ih);

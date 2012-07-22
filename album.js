@@ -1,9 +1,4 @@
 
-// sort albums reverse - newest ones come first
-albums.sort(function(a, b) { return (a.name < b.name); });
-// sort images normal order
-for (x = 0; x < albums.length - 1; x++)
-	albums[x].images.sort(function(a, b) { return(a.name > b.name); });
 
 var last = "";
 var last_album = "";
@@ -48,6 +43,13 @@ function block(b) {
 	return r;
 }
 
+function rblock(b) {
+	var r = "<div style=\"display: inline-block; float: right; height: 120px; width: 120px; line-height: 120px;\">" +
+		b +
+		"</div>\n";
+	return r;
+}
+
 function thumb(a, i, s) {
 	var r = "<a href=\"javascript:select(&quot;" + albums[a].name + "&quot;, &quot;" + albums[a].images[i].name  + "&quot;)\">" +
 		"<img ";
@@ -55,6 +57,26 @@ function thumb(a, i, s) {
 		r += "class=\"selected\" ";
 	r += " ) + style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + get_thumb_of(albums[a].images[i].name) +"\" /></a>";
 	return block(r);
+}
+
+function object(x, y) {
+	var r = "";
+	var o = albums[x].images[y].name;
+
+	if (o.match(".avi") || o.match(".AVI")) {
+		r += "<embed autoplay=\"true\" autostart=\"true\" uimode=\"true\" type=\"application/x-mplayer2\" id=\"MediaPlayer\" src=\"/" + album + "/" + entry + "\" style=\"visibility: visible;\" height=\"480\" width=\"640\" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/\">\n";
+	} else if (o.match(".mp4") || o.match(".MP4")) {
+		// Video display
+		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'></video>";
+	} else if ( o.match(".ogv") || o.match(".OGV")) {
+		// Video display
+		r += "<embed autoplay=\"true\" autostart=\"true\" uimode=\"true\" type=\"application/x-mplayer2\" id=\"MediaPlayer\" src=\"/" + albums[x].name + "/" + o + "\" style=\"visibility: visible;\" height=\"480\" width=\"640\" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/\">\n";
+		r += "<h6>This video is Ogg/Theora encoded. You'll have to use Firefox or Chrome to watch this video</h6>";
+	} else {
+		// image display
+		r += "<img class=\"selected\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + o + "\" />\n";
+	}
+	return r;
 }
 
 function select(a, i) {
@@ -68,6 +90,11 @@ function select(a, i) {
 		var s_end = Math.min(s_start + 10, (albums.length - 1));
 
 		c += "<div style=\"display: inline-block;\">\n";
+		if (last_index_section > 0)
+			c += block("<a href=\"javascript:last_index_section--; select(&quot;&quot, &quot,&quot;)\">&lt;</a>");
+		else
+			c += block("&nbsp;");
+		c += "<div style=\"display: inline-block; float: middle; width: 620px;\">\n";
 		for (x = s_start; x < s_end; x++) {
 			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(&quot;" + albums[x].name + "&quot, &quot;&quot;)\">" + albums[x].name + "</a></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
@@ -77,6 +104,11 @@ function select(a, i) {
 			c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>\n";
+		if (last_index_section + 1 < (albums.length - 1) / 10)
+			c += rblock("<a href=\"javascript:last_index_section++; select(&quot;&quot, &quot,&quot;)\">&gt;</a>");
+		else
+			c += rblock("&nbsp;");
+		c += "</div>";
 
 		document.getElementById('content').innerHTML = c;
 
@@ -102,22 +134,22 @@ function select(a, i) {
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_album_section > 0)
-			c += block("<");
+			c += block("<a href=\"javascript:last_album_section--; select(&quot;" + a + "&quot, &quot&quot;)\">&lt;</a>");
 		else
 			c += block("&nbsp;");
-		c += "<div style=\"display: inline-block;\">\n";
+		c += "<div style=\"display: inline-block; float: middle; width: 620px;\">\n";
 		for (y = s_start; y < s_end; y++ ) {
 			if (y % 5 == 0)
-				c += "<div style=\"float: left; height: 120px; width: 0px; display: table-cell; line-height: 120px; vertical-align: middle;\"></div>\n";
+				c += "<div style=\"display: inline-block; float:left; height: 120px; width: 0px; display: table-cell; line-height: 120px; vertical-align: middle;\"></div>\n";
 			c += thumb(x, y, 0);
 			if (y % 5 == 4)
 				c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>";
 		if (last_album_section + 1 < (albums[x].images.length - 1) / 25)
-			c += block(">");
+			c += rblock("<a href=\"javascript:last_album_section++; select(&quot;" + a + "&quot, &quot&quot;)\">&gt;</a>");
 		else
-			c += block("&nbsp;");
+			c += rblock("&nbsp;");
 		c += "</div>";
 
 		document.getElementById('content').innerHTML = c;
@@ -149,24 +181,25 @@ function select(a, i) {
 			c += thumb(x, z, (z == y));
 		}
 		if (y <= albums[x].images.length - 6)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\">&gt;</a>");
+			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\">&gt;</a>");
 		else
-			c += block("&nbsp;");
+			c += rblock("&nbsp;");
 		c += "</div>\n";
 		c += "<div style=\"clear: both;\"></div>\n";
 
+		// image
 		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
 		if (y > 0)
 			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-1].name + "&quot;)\">&lt;</a>");
 		else
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
-		c += "<img class=\"selected\" src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + albums[x].images[y].name + "\"/>";
+		c += object(x,y);
 		c += "</div>\n";
 		if (y <= albums[x].images.length - 2)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\">&gt;</a>");
+			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\">&gt;</a>");
 		else
-			c += block("&nbsp;");
+			c += rblock("&nbsp;");
 		c += "<div style=\"clear: both;\"></div>\n";
 
 		c += "</div>\n";
@@ -284,6 +317,12 @@ function keypressed(e) {
 document.onkeydown = keypressed;
 
 function init() {
+	// sort albums reverse - newest ones come first
+	albums.sort(function(a, b) { return ((a.name < b.name) ? 1:-1); });
+	// sort images normal order
+	for (x = 0; x < albums.length - 1; x++)
+		albums[x].images.sort(function(a, b) { return((a.name > b.name) ? 1:-1); });
+	last_index_section=0;
 	select("", "");
 }
 
