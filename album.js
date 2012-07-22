@@ -91,7 +91,7 @@ function select(a, i) {
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_index_section > 0)
-			c += block("<a href=\"javascript:last_index_section--; select(&quot;&quot, &quot,&quot;)\">&lt;</a>");
+			c += block("<a href=\"javascript:last_index_section--; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: middle; width: 620px;\">\n";
@@ -105,7 +105,7 @@ function select(a, i) {
 		}
 		c += "</div>\n";
 		if (last_index_section + 1 < (albums.length - 1) / 10)
-			c += rblock("<a href=\"javascript:last_index_section++; select(&quot;&quot, &quot,&quot;)\">&gt;</a>");
+			c += rblock("<a href=\"javascript:last_index_section++; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "</div>";
@@ -134,7 +134,7 @@ function select(a, i) {
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_album_section > 0)
-			c += block("<a href=\"javascript:last_album_section--; select(&quot;" + a + "&quot, &quot&quot;)\">&lt;</a>");
+			c += block("<a href=\"javascript:last_album_section--; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: middle; width: 620px;\">\n";
@@ -147,7 +147,7 @@ function select(a, i) {
 		}
 		c += "</div>";
 		if (last_album_section + 1 < (albums[x].images.length - 1) / 25)
-			c += rblock("<a href=\"javascript:last_album_section++; select(&quot;" + a + "&quot, &quot&quot;)\">&gt;</a>");
+			c += rblock("<a href=\"javascript:last_album_section++; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "</div>";
@@ -174,14 +174,14 @@ function select(a, i) {
 		// navigation
 		c += "<div id=\"navigation\" style=\"display: inline-block;\">\n";
 		if (y > 4)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-4].name + "&quot;)\">&lt;</a>");
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-4].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		for (z = Math.max(0, y - 4); z <= Math.min(y + 4, albums[x].images.length - 2); z++) {
 			c += thumb(x, z, (z == y));
 		}
 		if (y <= albums[x].images.length - 6)
-			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\">&gt;</a>");
+			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "</div>\n";
@@ -190,14 +190,14 @@ function select(a, i) {
 		// image
 		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
 		if (y > 0)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-1].name + "&quot;)\">&lt;</a>");
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-1].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		c += object(x,y);
 		c += "</div>\n";
 		if (y <= albums[x].images.length - 2)
-			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\">&gt;</a>");
+			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "<div style=\"clear: both;\"></div>\n";
@@ -226,8 +226,6 @@ function keypressed(e) {
 	e = e || window.event;
 
 	var k = e.keyCode || e.which;
-
-	// FIXME: home/end should be usable too.
 
 	switch(k) {
 	case 33: // pgup
@@ -266,6 +264,31 @@ function keypressed(e) {
 			}
 		}
 		break;
+	case 35: // end
+		if (last == "image") {
+			var x = find_album(last_album);
+			select(last_album, albums[x].images[albums[x].images.length - 2].name);
+		} else if (last == "album") {
+			var x = find_album(last_album);
+			last_album_section = Math.floor((albums[x].images.length - 2) / 25);
+			select(last_album, "");
+		} else {
+			last_index_section = Math.floor((albums.length - 2) / 10);
+			select("", "");
+		}
+		break;
+	case 36: // home
+		if (last == "image") {
+			var x = find_album(last_album);
+			select(last_album, albums[x].images[0].name);
+		} else if (last == "album") {
+			last_album_section = 0;
+			select(last_album, "");
+		} else {
+			last_index_section = 0;
+			init();
+		}
+		break;
 	case 78: // n
 	case 32: // space
 	case 39: // right
@@ -274,6 +297,18 @@ function keypressed(e) {
 			var y = find_image(x, last_image);
 			if (y < albums[x].images.length - 2)
 				select(last_album, albums[x].images[y+1].name);
+		} else if (last == "album") {
+			var x = find_album(last_album);
+			if (last_album_section < Math.floor((albums[x].images.length - 2) / 25)) {
+				last_album_section++;
+				select(last_album, "");
+			}
+		} else {
+			var x = find_album(last_album);
+			if (last_index_section < Math.floor((albums.length - 1) / 10)) {
+				last_index_section++;
+				select("", "");
+			}
 		}
 		break;
 	case 80: // p
@@ -284,6 +319,16 @@ function keypressed(e) {
 			var y = find_image(x, last_image);
 			if (y > 0)
 				select(last_album, albums[x].images[y-1].name);
+		} else if (last == "album") {
+			if (last_album_section > 0) {
+				last_album_section--;
+				select(last_album, "");
+			}
+		} else {
+			if (last_index_section > 0) {
+				last_index_section--;
+				select("", "");
+			}
 		}
 		break;
 	case 85: // u
