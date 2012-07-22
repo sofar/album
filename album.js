@@ -1,5 +1,4 @@
 
-
 var last = "";
 var last_album = "";
 var last_image = "";
@@ -7,6 +6,7 @@ var last_index_section = 0;
 var last_album_section = 0;
 var slideshow = false;
 var slideshowinterval;
+var help = false;
 
 function get_thumb_of(name) {
 	if (name.match(".ogv"))
@@ -96,7 +96,7 @@ function select(a, i) {
 			c += block("<a href=\"javascript:last_index_section--; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		c += "<div style=\"display: inline-block; float: middle; width: 620px;\">\n";
+		c += "<div style=\"display: inline-block; float: left; width: 620px;\">\n";
 		for (x = s_start; x < s_end; x++) {
 			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(&quot;" + albums[x].name + "&quot, &quot;&quot;)\">" + albums[x].name + "</a></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
@@ -231,6 +231,37 @@ function run_slideshow() {
 		select(last_album, albums[x].images[y+1].name);
 	else
 		select(last_album, albums[x].images[0].name);
+}
+
+function do_help() {
+	var c = "";
+	help = true;
+
+	c += "<div id=\"navigation\" style=\"display: inline-block; text-align: left;\">\n";
+
+	c += "<h2>Photo Album Help</h2>\n";
+	c += "<pre>\n";
+	c += "Keyboard navigation:\n\n";
+	c += "Key        Action\n"
+	c += "=========  ======\n"
+	c += "End        Go to the last page or photo\n";
+	c += "PgDn       Go to the next page\n";
+	c += "Right      Go to the next page or photo\n";
+	c += "n          Go to the next page or photo\n";
+	c += "Space      Go to the next page or photo\n";
+	c += "Down       Go back into the album or image\n\n";
+	c += "Home       Go to the first page or photo\n";
+	c += "PgUp       Go to the previous page\n";
+	c += "Left       Go to the previous page or photo\n";
+	c += "p          Go to the previous page or photo\n";
+	c += "Backspace  Go to the previous page or photo\n";
+	c += "Up         Go back to the album or index\n\n";
+	c += "s          Start or stop the slideshow\n\n";
+	c += "h          Show or leave this help screen\n";
+	c += "</pre>\n";
+
+	c += "</div>\n";
+	document.getElementById('content').innerHTML = c;
 }
 
 function keypressed(e) {
@@ -371,6 +402,20 @@ function keypressed(e) {
 				slideshow = true;
 				slideshowinterval = window.setInterval(run_slideshow, 5000);
 			}
+		}
+		break;
+	case 72: // h
+		if (help) {
+			help = false;
+			if (last == "image")
+				select(last_album, last_image);
+			else if (last == "album")
+				select(last_album, "")
+			else
+				select("", "");
+		} else {
+			help = true;
+			do_help();
 		}
 		break;
 	default:
