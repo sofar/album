@@ -52,8 +52,11 @@
   <div id="title">
     <a href="/">[index]</a>
   </div>
-
   <hr />
+  <div id="help" style="float:right;">
+    <a href="javascript:do_help();">?</a>
+  </div>
+
 
   <div id="content">
     (loading...)

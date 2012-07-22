@@ -235,6 +235,16 @@ function run_slideshow() {
 
 function do_help() {
 	var c = "";
+	if (help) {
+		help = false;
+		if (last == "image")
+			select(last_album, last_image);
+		else if (last == "album")
+			select(last_album, "")
+		else
+			select("", "");
+		return;
+	}
 	help = true;
 
 	c += "<div id=\"navigation\" style=\"display: inline-block; text-align: left;\">\n";
@@ -405,18 +415,7 @@ function keypressed(e) {
 		}
 		break;
 	case 72: // h
-		if (help) {
-			help = false;
-			if (last == "image")
-				select(last_album, last_image);
-			else if (last == "album")
-				select(last_album, "")
-			else
-				select("", "");
-		} else {
-			help = true;
-			do_help();
-		}
+		do_help();
 		break;
 	default:
 		// alert(k);
