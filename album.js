@@ -198,7 +198,7 @@ function select(a, i) {
 		c += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		c += object(x,y);
 		c += "</div>\n";
-		if (y <= albums[x].images.length - 2)
+		if (y < albums[x].images.length - 2)
 			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
