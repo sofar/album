@@ -7,6 +7,12 @@ var last_album_section = 0;
 var slideshow = false;
 var slideshowinterval;
 var help = false;
+var preloads = [];
+
+function preload(x, y, size) {
+	preloads[preloads.length] = new Image();
+	preloads[preloads.length - 1].src = "image.php?r=1&s=" + size + "&i=" + albums[x].name + "/" + albums[x].images[y].name;
+}
 
 function get_thumb_of(name) {
 	if (name.match(".ogv"))
@@ -25,14 +31,14 @@ function get_thumb_of(name) {
 }
 
 function find_album(a) {
-	for (x = 0; x < albums.length - 1; x++)
+	for (x = 0; x < albums.length; x++)
 		if (albums[x].name == a)
 			return x;
 	return -1;
 }
 
 function find_image(x, i) {
-	for (y = 0; y < albums[x].images.length - 1; y++)
+	for (y = 0; y < albums[x].images.length; y++)
 		if (albums[x].images[y].name == i)
 			return y;
 	return -1;
@@ -76,6 +82,13 @@ function object(x, y) {
 		r += "<h6>This video is Ogg/Theora encoded. You'll have to use Firefox or Chrome to watch this video</h6>";
 	} else {
 		// image display
+		r += "<map name=\"map-" + o + "\">\n";
+		if (y > 0)
+			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot;, &quot;" + albums[x].images[y-1].name + "&quot;)\" />\n";
+		if (y < albums[x].images.length - 1)
+			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\" />\n";
+		r += "</map>\n";
+
 		r += "<img class=\"selected\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + o + "\" />\n";
 	}
 	return r;
@@ -88,8 +101,8 @@ function select(a, i) {
 		var c = "";
 
 		// calculate which section to display
-		var s_start = Math.min((last_index_section * 10), Math.min((albums.length - 1) / 10) * 10);
-		var s_end = Math.min(s_start + 10, (albums.length - 1));
+		var s_start = Math.min((last_index_section * 10), Math.min((albums.length) / 10) * 10);
+		var s_end = Math.min(s_start + 10, (albums.length));
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_index_section > 0)
@@ -100,13 +113,13 @@ function select(a, i) {
 		for (x = s_start; x < s_end; x++) {
 			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(&quot;" + albums[x].name + "&quot, &quot;&quot;)\">" + albums[x].name + "</a></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
-			for (y = 0; y < Math.min(5, albums[x].images.length - 1); y++) {
+			for (y = 0; y < Math.min(5, albums[x].images.length); y++) {
 				c += thumb(x, y, 0);
 			}
 			c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>\n";
-		if (last_index_section + 1 < (albums.length - 1) / 10)
+		if (last_index_section + 1 < albums.length / 10)
 			c += rblock("<a href=\"javascript:last_index_section++; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
@@ -116,7 +129,7 @@ function select(a, i) {
 
 		var t = "";
 		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
-		t += "( " + (s_start + 1) + " - " + s_end + " / " + (albums.length - 1) + " )\n";
+		t += "( " + (s_start + 1) + " - " + s_end + " / " + albums.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
 
@@ -131,8 +144,8 @@ function select(a, i) {
 		// calculate which section to display
 		if (last_album != a)
 			last_album_section = 0;
-		var s_start = Math.min((last_album_section * 25), Math.min((albums[x].images.length - 1) / 25) * 25);
-		var s_end = Math.min(s_start + 25, (albums[x].images.length - 1));
+		var s_start = Math.min((last_album_section * 25), Math.min(albums[x].images.length / 25) * 25);
+		var s_end = Math.min(s_start + 25, albums[x].images.length);
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_album_section > 0)
@@ -148,7 +161,7 @@ function select(a, i) {
 				c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>";
-		if (last_album_section + 1 < (albums[x].images.length - 1) / 25)
+		if (last_album_section + 1 < albums[x].images.length / 25)
 			c += rblock("<a href=\"javascript:last_album_section++; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
@@ -159,7 +172,7 @@ function select(a, i) {
 		var t = "";
 		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
 		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
-		t += "( " + (s_start + 1) + " - " + s_end + " / " + (albums[x].images.length - 1) + " )\n";
+		t += "( " + (s_start + 1) + " - " + s_end + " / " + albums[x].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
 
@@ -179,12 +192,13 @@ function select(a, i) {
 			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-4].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		for (z = Math.max(0, y - 4); z <= Math.min(y + 4, albums[x].images.length - 2); z++) {
+		for (z = Math.max(0, y - 4); z <= Math.min(y + 4, albums[x].images.length - 1); z++) {
 			c += thumb(x, z, (z == y));
 		}
-		if (y <= albums[x].images.length - 6)
+		if (y <= albums[x].images.length - 5) {
+			preload(x, y+4, 100);
 			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
-		else
+		} else
 			c += rblock("&nbsp;");
 		c += "</div>\n";
 		c += "<div style=\"clear: both;\"></div>\n";
@@ -198,9 +212,10 @@ function select(a, i) {
 		c += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		c += object(x,y);
 		c += "</div>\n";
-		if (y < albums[x].images.length - 2)
+		if (y < albums[x].images.length - 1) {
+			preload(x, y+1, 800);
 			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
-		else
+		} else
 			c += rblock("&nbsp;");
 		c += "<div style=\"clear: both;\"></div>\n";
 
@@ -212,7 +227,7 @@ function select(a, i) {
 		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
 		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
 		t += "<a href=\"/" + albums[x].name + "/" + albums[x].images[y].name + "\">[" + albums[x].images[y].name + "]</a>&nbsp;";
-		t += "( " + (y + 1) + " / " + (albums[x].images.length - 1) + " )\n";
+		t += "( " + (y + 1) + " / " + albums[x].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
 
@@ -227,7 +242,7 @@ function select(a, i) {
 function run_slideshow() {
 	var x = find_album(last_album);
 	var y = find_image(x, last_image);
-	if (y < albums[x].images.length - 2)
+	if (y < albums[x].images.length - 1)
 		select(last_album, albums[x].images[y+1].name);
 	else
 		select(last_album, albums[x].images[0].name);
@@ -301,16 +316,16 @@ function keypressed(e) {
 		if (last == "image") {
 			var x = find_album(last_album);
 			var y = find_image(x, last_image);
-			select(last_album, albums[x].images[Math.min( y + 5, albums[x].images.length - 2)].name);
+			select(last_album, albums[x].images[Math.min( y + 5, albums[x].images.length - 1)].name);
 		} else if (last == "album") {
 			var x = find_album(last_album);
-			if (last_album_section < Math.floor((albums[x].images.length - 2) / 25)) {
+			if (last_album_section < Math.floor((albums[x].images.length - 1) / 25)) {
 				last_album_section++;
 				select(last_album, "");
 			}
 		} else {
 			var x = find_album(last_album);
-			if (last_index_section < Math.floor((albums.length - 1) / 10)) {
+			if (last_index_section < Math.floor(albums.length / 10)) {
 				last_index_section++;
 				select("", "");
 			}
@@ -319,13 +334,13 @@ function keypressed(e) {
 	case 35: // end
 		if (last == "image") {
 			var x = find_album(last_album);
-			select(last_album, albums[x].images[albums[x].images.length - 2].name);
+			select(last_album, albums[x].images[albums[x].images.length - 1].name);
 		} else if (last == "album") {
 			var x = find_album(last_album);
-			last_album_section = Math.floor((albums[x].images.length - 2) / 25);
+			last_album_section = Math.floor((albums[x].images.length - 1) / 25);
 			select(last_album, "");
 		} else {
-			last_index_section = Math.floor((albums.length - 2) / 10);
+			last_index_section = Math.floor((albums.length - 1) / 10);
 			select("", "");
 		}
 		break;
@@ -347,17 +362,17 @@ function keypressed(e) {
 		if (last == "image") {
 			var x = find_album(last_album);
 			var y = find_image(x, last_image);
-			if (y < albums[x].images.length - 2)
+			if (y < albums[x].images.length - 1)
 				select(last_album, albums[x].images[y+1].name);
 		} else if (last == "album") {
 			var x = find_album(last_album);
-			if (last_album_section < Math.floor((albums[x].images.length - 2) / 25)) {
+			if (last_album_section < Math.floor((albums[x].images.length - 1) / 25)) {
 				last_album_section++;
 				select(last_album, "");
 			}
 		} else {
 			var x = find_album(last_album);
-			if (last_index_section < Math.floor((albums.length - 1) / 10)) {
+			if (last_index_section < Math.floor(albums.length / 10)) {
 				last_index_section++;
 				select("", "");
 			}
@@ -427,13 +442,21 @@ function keypressed(e) {
 
 document.onkeydown = keypressed;
 
+albums.sort(function(a, b) {
+	return ((a.name < b.name) ? 1 : -1);
+});
+
+for (x = 0; x < albums.length; x++) {
+	albums[x].images.sort(function(a, b) {
+		return ((a.name > b.name) ? 1 : -1);
+	});
+}
+
 function init() {
 	// sort albums reverse - newest ones come first
-	albums.sort(function(a, b) { return ((a.name < b.name) ? 1:-1); });
+	//albums.sort(function(a, b) { return ((a.name < b.name) ? 1:-1); });
 	// sort images normal order
-	for (x = 0; x < albums.length - 1; x++)
-		albums[x].images.sort(function(a, b) { return((a.name > b.name) ? 1:-1); });
-	last_index_section=0;
+	last_index_section = 0;
 	select("", "");
 }
 
