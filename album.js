@@ -9,6 +9,13 @@ var slideshowinterval;
 var help = false;
 var preloads = [];
 
+// sizes
+var size_i = 10;  // album lines on the index page
+var size_il = 5;  // thumbs per line on the index page
+var size_a = 5;   // thumblines on the album page
+var size_al = 5;  // thumbs per line on the album page
+var size_n = 4;   // navigation line size either way on image page
+
 function preload(x, y, size) {
 	preloads[preloads.length] = new Image();
 	preloads[preloads.length - 1].src = "image.php?r=1&s=" + size + "&i=" + albums[x].name + "/" + albums[x].images[y].name;
@@ -101,8 +108,8 @@ function select(a, i) {
 		var c = "";
 
 		// calculate which section to display
-		var s_start = Math.min((last_index_section * 10), Math.min((albums.length) / 10) * 10);
-		var s_end = Math.min(s_start + 10, (albums.length));
+		var s_start = Math.min((last_index_section * size_i), Math.min((albums.length) / size_i) * size_i);
+		var s_end = Math.min(s_start + size_i, (albums.length));
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_index_section > 0)
@@ -113,13 +120,13 @@ function select(a, i) {
 		for (x = s_start; x < s_end; x++) {
 			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(&quot;" + albums[x].name + "&quot, &quot;&quot;)\">" + albums[x].name + "</a></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
-			for (y = 0; y < Math.min(5, albums[x].images.length); y++) {
+			for (y = 0; y < Math.min(size_il, albums[x].images.length); y++) {
 				c += thumb(x, y, 0);
 			}
 			c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>\n";
-		if (last_index_section + 1 < albums.length / 10)
+		if (last_index_section + 1 < albums.length / size_i)
 			c += rblock("<a href=\"javascript:last_index_section++; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
@@ -144,24 +151,24 @@ function select(a, i) {
 		// calculate which section to display
 		if (last_album != a)
 			last_album_section = 0;
-		var s_start = Math.min((last_album_section * 25), Math.min(albums[x].images.length / 25) * 25);
-		var s_end = Math.min(s_start + 25, albums[x].images.length);
+		var s_start = Math.min((last_album_section * (size_a * size_al)), Math.min(albums[x].images.length / (size_a * size_al)) * (size_a * size_al));
+		var s_end = Math.min(s_start + (size_a * size_al), albums[x].images.length);
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_album_section > 0)
 			c += block("<a href=\"javascript:last_album_section--; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		c += "<div style=\"display: inline-block; float: middle; width: 620px;\">\n";
+		c += "<div style=\"display: inline-block; width: 620px;\">\n";
 		for (y = s_start; y < s_end; y++ ) {
-			if (y % 5 == 0)
+			if (y % size_al == 0)
 				c += "<div style=\"display: inline-block; float:left; height: 120px; width: 0px; display: table-cell; line-height: 120px; vertical-align: middle;\"></div>\n";
 			c += thumb(x, y, 0);
-			if (y % 5 == 4)
+			if (y % size_al == size_al - 1)
 				c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>";
-		if (last_album_section + 1 < albums[x].images.length / 25)
+		if (last_album_section + 1 < albums[x].images.length / (size_a * size_al))
 			c += rblock("<a href=\"javascript:last_album_section++; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
@@ -188,16 +195,16 @@ function select(a, i) {
 
 		// navigation
 		c += "<div id=\"navigation\" style=\"display: inline-block;\">\n";
-		if (y > 4)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-4].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+		if (y > size_n)
+			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-size_n].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		for (z = Math.max(0, y - 4); z <= Math.min(y + 4, albums[x].images.length - 1); z++) {
+		for (z = Math.max(0, y - size_n); z <= Math.min(y + size_n, albums[x].images.length - 1); z++) {
 			c += thumb(x, z, (z == y));
 		}
-		if (y <= albums[x].images.length - 5) {
-			preload(x, y+4, 100);
-			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+4].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+		if (y <= albums[x].images.length - (size_n + 1)) {
+			preload(x, y+size_n, 100);
+			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+size_n].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		} else
 			c += rblock("&nbsp;");
 		c += "</div>\n";
@@ -282,11 +289,27 @@ function do_help() {
 	c += "Backspace  Go to the previous page or photo\n";
 	c += "Up         Go back to the album or index\n\n";
 	c += "s          Start or stop the slideshow\n\n";
-	c += "h          Show or leave this help screen\n";
+	c += "h          Show or leave this help screen\n\n";
+	c += "Settings\n";
+	c += "========\n";
+	c += "albums in the index page: " + size_i + "\n";
+	c += "thumbs per line in index: " + size_il + "\n";
+	c += "thumblines on the album:  " + size_a + "\n";
+	c += "thumbs per line in album: " + size_al + "\n";
+	c += "size of navigation line:  " + size_n + "\n";
 	c += "</pre>\n";
 
 	c += "</div>\n";
 	document.getElementById('content').innerHTML = c;
+}
+
+function repaint() {
+	if (last == "image")
+		select(last_album, last_image);
+	else if (last == "album")
+		select(last_album, "");
+	else
+		select("", "");
 }
 
 function keypressed(e) {
@@ -319,13 +342,13 @@ function keypressed(e) {
 			select(last_album, albums[x].images[Math.min( y + 5, albums[x].images.length - 1)].name);
 		} else if (last == "album") {
 			var x = find_album(last_album);
-			if (last_album_section < Math.floor((albums[x].images.length - 1) / 25)) {
+			if (last_album_section < Math.floor((albums[x].images.length - 1) / (size_a * size_al))) {
 				last_album_section++;
 				select(last_album, "");
 			}
 		} else {
 			var x = find_album(last_album);
-			if (last_index_section < Math.floor(albums.length / 10)) {
+			if (last_index_section < Math.floor(albums.length / size_i)) {
 				last_index_section++;
 				select("", "");
 			}
@@ -337,10 +360,10 @@ function keypressed(e) {
 			select(last_album, albums[x].images[albums[x].images.length - 1].name);
 		} else if (last == "album") {
 			var x = find_album(last_album);
-			last_album_section = Math.floor((albums[x].images.length - 1) / 25);
+			last_album_section = Math.floor((albums[x].images.length - 1) / (size_a * size_al));
 			select(last_album, "");
 		} else {
-			last_index_section = Math.floor((albums.length - 1) / 10);
+			last_index_section = Math.floor((albums.length - 1) / size_i);
 			select("", "");
 		}
 		break;
@@ -366,13 +389,13 @@ function keypressed(e) {
 				select(last_album, albums[x].images[y+1].name);
 		} else if (last == "album") {
 			var x = find_album(last_album);
-			if (last_album_section < Math.floor((albums[x].images.length - 1) / 25)) {
+			if (last_album_section < Math.floor((albums[x].images.length - 1) / (size_a * size_al))) {
 				last_album_section++;
 				select(last_album, "");
 			}
 		} else {
 			var x = find_album(last_album);
-			if (last_index_section < Math.floor(albums.length / 10)) {
+			if (last_index_section < Math.floor(albums.length / size_i)) {
 				last_index_section++;
 				select("", "");
 			}
@@ -432,6 +455,14 @@ function keypressed(e) {
 	case 72: // h
 		do_help();
 		break;
+	case 49:
+		size_n = (size_n == 0) ? 0 : size_n - 1;
+		repaint();
+		break
+	case 50:
+		size_n++;
+		repaint();
+		break
 	default:
 		// alert(k);
 		break;
