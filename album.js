@@ -6,6 +6,7 @@ var last_index_section = 0;
 var last_album_section = 0;
 var slideshow = false;
 var slideshowinterval;
+var slideshowspeed = 5;
 var help = false;
 var preloads = [];
 
@@ -290,15 +291,41 @@ function do_help() {
 	c += "Up         Go back to the album or index\n\n";
 	c += "s          Start or stop the slideshow\n\n";
 	c += "h          Show or leave this help screen\n\n";
+
 	c += "Settings\n";
 	c += "========\n";
-	c += "albums in the index page: " + size_i + "\n";
-	c += "thumbs per line in index: " + size_il + "\n";
-	c += "thumblines on the album:  " + size_a + "\n";
-	c += "thumbs per line in album: " + size_al + "\n";
-	c += "size of navigation line:  " + size_n + "\n";
-	c += "</pre>\n";
 
+	c += "albums in the index page: ";
+	c += "<a title=\"-\" href=\"#\" onclick=\"size_i = ( size_i <= 1 ) ? 1 : size_i - 1; document.getElementById('size_i').innerHTML = size_i; return false;\">-</a>";
+	c += "&nbsp;<a id=\"size_i\">" + size_i + "</a>&nbsp;";
+	c += "<a title=\"+\" href=\"#\" onclick=\"size_i++; document.getElementById('size_i').innerHTML = size_i; return false;\">+</a>\n";
+
+	c += "thumbs per line in index: ";
+	c += "<a title=\"-\" href=\"#\" onclick=\"size_il = ( size_il <= 1 ) ? 1 : size_il - 1; document.getElementById('size_il').innerHTML = size_il; return false;\">-</a>";
+	c += "&nbsp;<a id=\"size_il\">" + size_il + "</a>&nbsp;";
+	c += "<a title=\"+\" href=\"#\" onclick=\"size_il++; document.getElementById('size_il').innerHTML = size_il; return false;\">+</a>\n";
+
+	c += "thumblines on the album:  ";
+	c += "<a title=\"-\" href=\"#\" onclick=\"size_a = ( size_a <= 1 ) ? 1 : size_a - 1; document.getElementById('size_a').innerHTML = size_a; return false;\">-</a>";
+	c += "&nbsp;<a id=\"size_a\">" + size_a + "</a>&nbsp;";
+	c += "<a title=\"+\" href=\"#\" onclick=\"size_a++; document.getElementById('size_a').innerHTML = size_a; return false;\">+</a>\n";
+
+	c += "thumbs per line in album: ";
+	c += "<a title=\"-\" href=\"#\" onclick=\"size_al = ( size_al <= 1 ) ? 1 : size_al - 1; document.getElementById('size_al').innerHTML = size_al; return false;\">-</a>";
+	c += "&nbsp;<a id=\"size_al\">" + size_al + "</a>&nbsp;";
+	c += "<a title=\"+\" href=\"#\" onclick=\"size_al++; document.getElementById('size_al').innerHTML = size_al; return false;\">+</a>\n";
+
+	c += "size of navigation line:  ";
+	c += "<a title=\"-\" href=\"#\" onclick=\"size_n = ( size_n <= 1 ) ? 1 : size_n - 1; document.getElementById('size_n').innerHTML = size_n; return false;\">-</a>";
+	c += "&nbsp;<a id=\"size_n\">" + size_n + "</a>&nbsp;";
+	c += "<a title=\"+\" href=\"#\" onclick=\"size_n++; document.getElementById('size_n').innerHTML = size_n; return false;\">+</a>\n";
+
+	c += "slideshow timer (s)    :  ";
+	c += "<a title=\"-\" href=\"#\" onclick=\"slideshowspeed = ( slideshowspeed <= 1 ) ? 1 : slideshowspeed - 1; document.getElementById('slideshowspeed').innerHTML = slideshowspeed; return false;\">-</a>";
+	c += "&nbsp;<a id=\"slideshowspeed\">" + slideshowspeed + "</a>&nbsp;";
+	c += "<a title=\"+\" href=\"#\" onclick=\"slideshowspeed++; document.getElementById('slideshowspeed').innerHTML = slideshowspeed; return false;\">+</a>\n";
+
+	c += "</pre>\n";
 	c += "</div>\n";
 	document.getElementById('content').innerHTML = c;
 }
@@ -448,7 +475,7 @@ function keypressed(e) {
 		} else {
 			if (last == "image") {
 				slideshow = true;
-				slideshowinterval = window.setInterval(run_slideshow, 5000);
+				slideshowinterval = window.setInterval(run_slideshow, slideshowspeed * 1000);
 			}
 		}
 		break;
