@@ -110,12 +110,17 @@ function object(x, y) {
 
 	if (o.match(".mp4") || o.match(".MP4")) {
 		// Video display
+		r += "<div style=\"display: inline-block;\">";
 		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "</div>\n";
 	} else if ( o.match(".ogv") || o.match(".OGV")) {
 		// Video display
+		r += "<div style=\"display: inline-block;\">";
 		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "</div>\n";
 	} else {
 		// image display
+		r += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		r += "<map name=\"map-" + o + "\">\n";
 		if (y > 0)
 			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot;, &quot;" + albums[x].images[y-1].name + "&quot;)\" />\n";
@@ -124,6 +129,7 @@ function object(x, y) {
 		r += "</map>\n";
 
 		r += "<img class=\"selected\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + o + "\" />\n";
+		r += "</div>\n";
 	}
 	return r;
 }
@@ -243,9 +249,7 @@ function select(a, i) {
 			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-1].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		c += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		c += object(x,y);
-		c += "</div>\n";
 		if (y < albums[x].images.length - 1) {
 			preload(x, y+1, 800);
 			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
