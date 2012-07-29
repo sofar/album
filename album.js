@@ -96,11 +96,18 @@ function rblock(b) {
 }
 
 function thumb(a, i, s) {
+	var t = get_thumb_of(albums[a].images[i].name);
 	var r = "<a href=\"javascript:select(&quot;" + albums[a].name + "&quot;, &quot;" + albums[a].images[i].name  + "&quot;)\">" +
 		"<img ";
+	if (t.match(".thm")) {
+		if (s == 0)
+			r += "class=\"thm\" ";
+		else
+			r += "class=\"thm_selected\" ";
+	}
 	if (s != 0)
 		r += "class=\"selected\" ";
-	r += " ) + style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + get_thumb_of(albums[a].images[i].name) +"\" /></a>";
+	r += " style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + t +"\" /></a>";
 	return block(r);
 }
 
