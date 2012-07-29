@@ -9,6 +9,10 @@ var slideshowinterval;
 var slideshowspeed = 5;
 var help = false;
 var preloads = [];
+var supports_mpeg4 = false;
+var supports_h264 = false;
+var supports_ogg = false;
+var supports_webm = false;
 
 // sizes
 var size_i = 10;  // album lines on the index page
@@ -22,19 +26,44 @@ function preload(x, y, size) {
 	preloads[preloads.length - 1].src = "image.php?r=1&s=" + size + "&i=" + albums[x].name + "/" + albums[x].images[y].name;
 }
 
+function format_is_supported(name) {
+	// Test compatibility for these per browser
+	if (name.match(".ogv"))
+		return supports_ogg;
+	if (name.match(".OGV"))
+		return supports_ogg;
+	if (name.match(".mp4"))
+		return supports_mpeg4;
+	if (name.match(".MP4"))
+		return supports_mpeg4;
+
+	// Always hide these files:
+	if (name.match(".mpg"))
+		return false;
+	if (name.match(".MPG"))
+		return false;
+	if (name.match(".avi"))
+		return false;
+	if (name.match(".AVI"))
+		return false;
+
+	// The rest is always supported
+	return true;
+}
+
 function get_thumb_of(name) {
 	if (name.match(".ogv"))
 		return name.replace(".ogv", ".thm");
 	if (name.match(".OGV"))
-		return name.replace(".OGV", ".THM");
+		return name.replace(".OGV", ".thm");
 	if (name.match(".mp4"))
 		return name.replace(".mp4", ".thm");
 	if (name.match(".MP4"))
-		return name.replace(".MP4", ".THM");
+		return name.replace(".MP4", ".thm");
 	if (name.match(".avi"))
 		return name.replace(".avi", ".thm");
 	if (name.match(".AVI"))
-		return name.replace(".AVI", ".THM");
+		return name.replace(".AVI", ".thm");
 	return name;
 }
 
@@ -323,7 +352,14 @@ function do_help() {
 	c += "slideshow timer (s)    :  ";
 	c += "<a title=\"-\" href=\"#\" onclick=\"slideshowspeed = ( slideshowspeed <= 1 ) ? 1 : slideshowspeed - 1; document.getElementById('slideshowspeed').innerHTML = slideshowspeed; return false;\">-</a>";
 	c += "&nbsp;<a id=\"slideshowspeed\">" + slideshowspeed + "</a>&nbsp;";
-	c += "<a title=\"+\" href=\"#\" onclick=\"slideshowspeed++; document.getElementById('slideshowspeed').innerHTML = slideshowspeed; return false;\">+</a>\n";
+	c += "<a title=\"+\" href=\"#\" onclick=\"slideshowspeed++; document.getElementById('slideshowspeed').innerHTML = slideshowspeed; return false;\">+</a>\n\n";
+
+	c += "Video format support detected:\n";
+	c += "========\n"
+	c += "mpeg4: " + (supports_mpeg4 ? "yes" : "no") + "\n";
+	c += "mp4  : " + (supports_h264 ? "yes" : "no") + "\n";
+	c += "ogg  : " + (supports_ogg ? "yes" : "no") + "\n";
+	c += "webm : " + (supports_webm ? "yes" : "no") + "\n";
 
 	c += "</pre>\n";
 	c += "</div>\n";
@@ -500,6 +536,33 @@ function keypressed(e) {
 
 document.onkeydown = keypressed;
 
+// Detect video format support
+var testEl = document.createElement( "video" ), mpeg4, h264, ogg, webm;
+if ( testEl.canPlayType ) {
+	// Check for MPEG-4 support
+	supports_mpeg4 = "" !== testEl.canPlayType( 'video/mp4; codecs="mp4v.20.8"' );
+
+	// Check for h264 support
+	supports_h264 = "" !== ( testEl.canPlayType( 'video/mp4; codecs="avc1.42E01E"' )
+	|| testEl.canPlayType( 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' ) );
+
+	// Check for Ogg support
+	supports_ogg = "" !== testEl.canPlayType( 'video/ogg; codecs="theora"' );
+
+	// Check for Webm support
+	supports_webm = "" !== testEl.canPlayType( 'video/webm; codecs="vp8, vorbis"' );
+}
+
+// remove unplayable video format items
+for (x = 0; x < albums.length; x++) {
+	// since splice removes, go backwards through the array
+	for (y = albums[x].images.length - 1; y >= 0; y--) {
+		if (!format_is_supported(albums[x].images[y].name))
+			albums[x].images.splice(y, 1);
+	}
+}
+
+// and now sort the indices.
 albums.sort(function(a, b) {
 	return ((a.name < b.name) ? 1 : -1);
 });
