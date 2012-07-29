@@ -107,7 +107,8 @@ function thumb(a, i, s) {
 	}
 	if (s != 0)
 		r += "class=\"selected\" ";
-	r += " style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + t +"\" /></a>";
+	r += "alt=\"" + albums[a].images[i].name + "\" ";
+	r += "style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + t +"\" /></a>";
 	return block(r);
 }
 
@@ -135,7 +136,7 @@ function object(x, y) {
 			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\" />\n";
 		r += "</map>\n";
 
-		r += "<img class=\"selected\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + o + "\" />\n";
+		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + o + "\" />\n";
 		r += "</div>\n";
 	}
 	return r;
@@ -564,8 +565,12 @@ if ( testEl.canPlayType ) {
 
 // remove unplayable video format items
 for (x = 0; x < albums.length; x++) {
+	if (!albums[x].images)
+		continue;
 	// since splice removes, go backwards through the array
 	for (y = albums[x].images.length - 1; y >= 0; y--) {
+		if (!albums[x].images[y])
+			continue;
 		if (!format_is_supported(albums[x].images[y].name))
 			albums[x].images.splice(y, 1);
 	}
@@ -577,6 +582,8 @@ albums.sort(function(a, b) {
 });
 
 for (x = 0; x < albums.length; x++) {
+	if (!albums[x].images)
+		continue;
 	albums[x].images.sort(function(a, b) {
 		return ((a.name > b.name) ? 1 : -1);
 	});
