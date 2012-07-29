@@ -33,9 +33,9 @@ function format_is_supported(name) {
 	if (name.match(".OGV"))
 		return supports_ogg;
 	if (name.match(".mp4"))
-		return supports_mpeg4;
+		return (supports_mpeg4 || supports_h264);
 	if (name.match(".MP4"))
-		return supports_mpeg4;
+		return (supports_mpeg4 || supports_h264);
 
 	// Always hide these files:
 	if (name.match(".mpg"))
