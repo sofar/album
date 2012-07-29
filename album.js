@@ -108,15 +108,12 @@ function object(x, y) {
 	var r = "";
 	var o = albums[x].images[y].name;
 
-	if (o.match(".avi") || o.match(".AVI")) {
-		r += "<embed autoplay=\"true\" autostart=\"true\" uimode=\"true\" type=\"application/x-mplayer2\" id=\"MediaPlayer\" src=\"/" + album + "/" + entry + "\" style=\"visibility: visible;\" height=\"480\" width=\"640\" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/\">\n";
-	} else if (o.match(".mp4") || o.match(".MP4")) {
+	if (o.match(".mp4") || o.match(".MP4")) {
 		// Video display
-		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'></video>";
+		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
 	} else if ( o.match(".ogv") || o.match(".OGV")) {
 		// Video display
-		r += "<embed autoplay=\"true\" autostart=\"true\" uimode=\"true\" type=\"application/x-mplayer2\" id=\"MediaPlayer\" src=\"/" + albums[x].name + "/" + o + "\" style=\"visibility: visible;\" height=\"480\" width=\"640\" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/\">\n";
-		r += "<h6>This video is Ogg/Theora encoded. You'll have to use Firefox or Chrome to watch this video</h6>";
+		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
 	} else {
 		// image display
 		r += "<map name=\"map-" + o + "\">\n";
@@ -207,7 +204,7 @@ function select(a, i) {
 		document.getElementById('content').innerHTML = c;
 
 		var t = "";
-		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
+		t += "<a href=\"javascript:select(&quot;&quot;, &quot;&quot;)\">[index]</a>&nbsp;";
 		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
 		t += "( " + (s_start + 1) + " - " + s_end + " / " + albums[x].images.length + " )\n";
 
@@ -546,8 +543,9 @@ if ( testEl.canPlayType ) {
 	supports_h264 = "" !== ( testEl.canPlayType( 'video/mp4; codecs="avc1.42E01E"' )
 	|| testEl.canPlayType( 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' ) );
 
-	// Check for Ogg support
-	supports_ogg = "" !== testEl.canPlayType( 'video/ogg; codecs="theora"' );
+	// Check for Ogg support, but only if mp4 is a no-go
+	if (!supports_mpeg4 && !supports_h264)
+		supports_ogg = "" !== testEl.canPlayType( 'video/ogg; codecs="theora"' );
 
 	// Check for Webm support
 	supports_webm = "" !== testEl.canPlayType( 'video/webm; codecs="vp8, vorbis"' );
@@ -574,9 +572,6 @@ for (x = 0; x < albums.length; x++) {
 }
 
 function init() {
-	// sort albums reverse - newest ones come first
-	//albums.sort(function(a, b) { return ((a.name < b.name) ? 1:-1); });
-	// sort images normal order
 	last_index_section = 0;
 	select("", "");
 }
