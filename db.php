@@ -17,20 +17,20 @@ foreach ($users as $user) {
 	$album = readdir($ah);
 	while ($album) {
 		# FIXME: add recursive album support
-		if (!is_dir($album) || ($album{0} == ".")) {
+		if (!is_dir($d . "/" . $album) || ($album{0} == ".")) {
 			$album = readdir($ah);
 			continue;
 		}
 		echo "{ name: '" . $album . "', owner: '" . $user . "', images: [\n";
 
-		$ih = opendir(getcwd() . "/" . $album);
+		$ih = opendir($d . "/" . $album);
 		$image = readdir($ih);
 		while ($image) {
-			if (is_dir($image) || ($image{0} == ".")) {
+			if (is_dir($d . "/" . $album . "/" . $image) || ($image{0} == ".")) {
 				$image = readdir($ih);
 				continue;
 			}
-			if ((!is_file(getcwd() . "/" . $album . "/" . $image)) ||
+			if ((!is_file($d . "/" . $album . "/" . $image)) ||
 			    (preg_match('/[.]avi$/', $image)) ||
 			    (preg_match('/[.]AVI$/', $image)) ||
 			    (preg_match('/[.]thm$/', $image)) ||
@@ -59,6 +59,6 @@ foreach ($users as $user) {
 	}
 	closedir($ah);
 }
-echo " ]\n";
+echo " ];\n";
 
 ?>
