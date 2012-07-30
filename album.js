@@ -116,31 +116,31 @@ function thumb(a, i, s) {
 	return block(r);
 }
 
-function object(x, y) {
+function object(a, i) {
 	var r = "";
-	var o = albums[x].images[y].name;
+	var o = albums[a].images[i].name;
 
 	if (o.match(".mp4") || o.match(".MP4")) {
 		// Video display
 		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "<video controls><source src=\"" + albums[a].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
 		r += "</div>\n";
 	} else if ( o.match(".ogv") || o.match(".OGV")) {
 		// Video display
 		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls><source src=\"" + albums[x].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "<video controls><source src=\"" + albums[a].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
 		r += "</div>\n";
 	} else {
 		// image display
 		r += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		r += "<map name=\"map-" + o + "\">\n";
-		if (y > 0)
-			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot;, &quot;" + albums[x].images[y-1].name + "&quot;)\" />\n";
-		if (y < albums[x].images.length - 1)
-			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\" />\n";
+		if (i > 0)
+			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(&quot;" + albums[a].name + "&quot;, &quot;" + albums[a].images[i-1].name + "&quot;)\" />\n";
+		if (i < albums[a].images.length - 1)
+			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(&quot;" + albums[a].name + "&quot, &quot;" + albums[a].images[i+1].name + "&quot;)\" />\n";
 		r += "</map>\n";
 
-		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(x, y, 800) + "\" />\n";
+		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
 		r += "</div>\n";
 	}
 	return r;
