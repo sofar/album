@@ -92,7 +92,7 @@ $album = dirname($image);
 
 # passtrhru unsized?
 if ($size == 0) {
-	$o = "/home/" . $u . "/album/" . $image;
+	$o = "/home/" . $user . "/album/" . $image;
 	if (file_exists($image))
 		pass_file_and_exit($image);
 }
