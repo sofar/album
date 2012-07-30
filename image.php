@@ -58,14 +58,14 @@ $max_size = 800;
 
 $size = $_GET['s'];
 
-if ($size > $max_size)
-	$size = $max_size;
-
 $resample = $_GET['r'];
 
 $image = $_GET['i'];
 
 $album = dirname($image);
+
+if ($size > $max_size)
+	$size = $max_size;
 
 $cache_base = "/var/cache/httpd";
 $cache_path = $cache_base . "/" . $album;
@@ -169,20 +169,20 @@ case 8:
 
 switch (strtolower($ext[2])) {
 case 'thm' :
-	imagejpeg ($save);
+	imagejpeg($save);
 	break;
 case 'jpg' :
 case 'jpeg':
-	imagejpeg ($save, $cache_file);
-	imagejpeg ($save);
+	imagejpeg($save, $cache_file);
+	imagejpeg($save);
 	break;
 case 'gif' :
-	imagegif ($save, $cache_file);
-	imagegif ($save);
+	imagegif($save, $cache_file);
+	imagegif($save);
 	break;
 case 'png' :
-	imagepng ($save, $cache_file);
-	imagepng ($save);
+	imagepng($save, $cache_file);
+	imagepng($save);
 	break;
 }
  
