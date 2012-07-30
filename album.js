@@ -1,7 +1,7 @@
 
 var last = "";
-var last_album;
-var last_image;
+var last_album = -1;
+var last_image = -1;
 var last_index_section = 0;
 var last_album_section = 0;
 var slideshow = false;
@@ -101,7 +101,7 @@ function rblock(b) {
 
 function thumb(a, i, s) {
 	var t = get_thumb_of(albums[a].images[i].name);
-	var r = "<a href=\"javascript:select(&quot;" + albums[a].name + "&quot;, &quot;" + albums[a].images[i].name  + "&quot;)\">" +
+	var r = "<a href=\"javascript:select(" + a + ", " + i + ")\">" +
 		"<img ";
 	if (t.match(".thm")) {
 		if (s == 0)
@@ -135,9 +135,9 @@ function object(a, i) {
 		r += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 		r += "<map name=\"map-" + o + "\">\n";
 		if (i > 0)
-			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(&quot;" + albums[a].name + "&quot;, &quot;" + albums[a].images[i-1].name + "&quot;)\" />\n";
+			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(" + a + ", " + (i-1) + ")\" />\n";
 		if (i < albums[a].images.length - 1)
-			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(&quot;" + albums[a].name + "&quot, &quot;" + albums[a].images[i+1].name + "&quot;)\" />\n";
+			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(" + a + ", " + (i+1) + ")\" />\n";
 		r += "</map>\n";
 
 		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
@@ -148,7 +148,7 @@ function object(a, i) {
 
 function select(a, i) {
 
-	if (a == "") {
+	if (a == -1) {
 		// display album list
 		var c = "";
 
@@ -158,12 +158,12 @@ function select(a, i) {
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_index_section > 0)
-			c += block("<a href=\"javascript:last_index_section--; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+			c += block("<a href=\"javascript:last_index_section--; select(-1, -1)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: left; width: 620px;\">\n";
 		for (x = s_start; x < s_end; x++) {
-			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(&quot;" + albums[x].name + "&quot, &quot;&quot;)\">" + albums[x].name + "</a></div>\n";
+			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(" + x + ", -1)\">" + albums[x].name + "</a></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
 			for (y = 0; y < Math.min(size_il, albums[x].images.length); y++) {
 				c += thumb(x, y, 0);
@@ -172,7 +172,7 @@ function select(a, i) {
 		}
 		c += "</div>\n";
 		if (last_index_section + 1 < albums.length / size_i)
-			c += rblock("<a href=\"javascript:last_index_section++; select(&quot;&quot, &quot,&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+			c += rblock("<a href=\"javascript:last_index_section++; (-1, -1)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "</div>";
@@ -188,33 +188,32 @@ function select(a, i) {
 		last = "index";
 
 		return;
-	} else if (i == "") {
+	} else if (i == -1) {
 		// display album overview page
 		var c = "";
-		var x = find_album(a);
 
 		// calculate which section to display
 		if (last_album != a)
 			last_album_section = 0;
-		var s_start = Math.min((last_album_section * (size_a * size_al)), Math.min(albums[x].images.length / (size_a * size_al)) * (size_a * size_al));
-		var s_end = Math.min(s_start + (size_a * size_al), albums[x].images.length);
+		var s_start = Math.min((last_album_section * (size_a * size_al)), Math.min(albums[a].images.length / (size_a * size_al)) * (size_a * size_al));
+		var s_end = Math.min(s_start + (size_a * size_al), albums[a].images.length);
 
 		c += "<div style=\"display: inline-block;\">\n";
 		if (last_album_section > 0)
-			c += block("<a href=\"javascript:last_album_section--; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+			c += block("<a href=\"javascript:last_album_section--; select(" + a + ", -1)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; width: 620px;\">\n";
 		for (y = s_start; y < s_end; y++ ) {
 			if (y % size_al == 0)
 				c += "<div style=\"display: inline-block; float:left; height: 120px; width: 0px; display: table-cell; line-height: 120px; vertical-align: middle;\"></div>\n";
-			c += thumb(x, y, 0);
+			c += thumb(a, y, 0);
 			if (y % size_al == size_al - 1)
 				c += "<div style=\"clear: both;\"></div>\n";
 		}
 		c += "</div>";
-		if (last_album_section + 1 < albums[x].images.length / (size_a * size_al))
-			c += rblock("<a href=\"javascript:last_album_section++; select(&quot;" + a + "&quot, &quot&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+		if (last_album_section + 1 < albums[a].images.length / (size_a * size_al))
+			c += rblock("<a href=\"javascript:last_album_section++; select(" + a + ", -1)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "</div>";
@@ -222,34 +221,32 @@ function select(a, i) {
 		document.getElementById('content').innerHTML = c;
 
 		var t = "";
-		t += "<a href=\"javascript:select(&quot;&quot;, &quot;&quot;)\">[index]</a>&nbsp;";
-		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
-		t += "( " + (s_start + 1) + " - " + s_end + " / " + albums[x].images.length + " )\n";
+		t += "<a href=\"javascript:select(-1, -1)\">[index]</a>&nbsp;";
+		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + albums[a].name + "]</a>&nbsp;";
+		t += "( " + (s_start + 1) + " - " + s_end + " / " + albums[a].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
 
-		last_album = x;
+		last_album = a;
 		last = "album";
 
 		return;
 	} else {
 		// display image
 		var c = "";
-		var x = find_album(a);
-		var y = find_image(x, i);
 
 		// navigation
 		c += "<div id=\"navigation\" style=\"display: inline-block;\">\n";
-		if (y > size_n)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-size_n].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+		if (i > size_n)
+			c += block("<a href=\"javascript:select(" + a + ", " + (i-size_n) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		for (z = Math.max(0, y - size_n); z <= Math.min(y + size_n, albums[x].images.length - 1); z++) {
-			c += thumb(x, z, (z == y));
+		for (z = Math.max(0, i - size_n); z <= Math.min(i + size_n, albums[a].images.length - 1); z++) {
+			c += thumb(a, z, (z == i));
 		}
-		if (y <= albums[x].images.length - (size_n + 1)) {
-			preload(x, y+size_n, 100);
-			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+size_n].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+		if (i <= albums[a].images.length - (size_n + 1)) {
+			preload(a, i+size_n, 100);
+			c += rblock("<a href=\"javascript:select(" + a + ", " + (i+size_n) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		} else
 			c += rblock("&nbsp;");
 		c += "</div>\n";
@@ -257,14 +254,14 @@ function select(a, i) {
 
 		// image
 		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
-		if (y > 0)
-			c += block("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y-1].name + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+		if (i > 0)
+			c += block("<a href=\"javascript:select(" + a + ", " + (i-1) + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		c += object(x,y);
-		if (y < albums[x].images.length - 1) {
-			preload(x, y+1, 800);
-			c += rblock("<a href=\"javascript:select(&quot;" + a + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+		c += object(a,i);
+		if (i < albums[a].images.length - 1) {
+			preload(a, i+1, 800);
+			c += rblock("<a href=\"javascript:select(" + a + ", " + (i+1) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		} else
 			c += rblock("&nbsp;");
 		c += "<div style=\"clear: both;\"></div>\n";
@@ -274,15 +271,15 @@ function select(a, i) {
 		document.getElementById('content').innerHTML = c;
 
 		var t = "";
-		t += "<a href=\"javascript:select(&quot;&quot;, &quot;&quot;)\">[index]</a>&nbsp;";
-		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
-		t += "<a href=\"/" + imgurl(x, y, 0) + "\">[" + albums[x].images[y].name + "]</a>&nbsp;";
-		t += "( " + (y + 1) + " / " + albums[x].images.length + " )\n";
+		t += "<a href=\"javascript:select(-1, -1)\">[index]</a>&nbsp;";
+		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + albums[a].name + "]</a>&nbsp;";
+		t += "<a href=\"/" + imgurl(a, i, 0) + "\">[" + albums[a].images[i].name + "]</a>&nbsp;";
+		t += "( " + (i + 1) + " / " + albums[a].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
 
-		last_album = x;
-		last_image = y;
+		last_album = a;
+		last_image = i;
 		last = "image";
 
 		return;
@@ -293,18 +290,18 @@ function run_slideshow() {
 	var x = last_album;
 	var y = last_image;
 	if (y < albums[x].images.length - 1)
-		select(albums[x].name, albums[x].images[y+1].name);
+		select(x, y+1);
 	else
-		select(albums[x].name, albums[x].images[0].name);
+		select(x, 0);
 }
 
 function repaint() {
 	if (last == "image")
-		select(albums[last_album].name, albums[last_album].images[last_image].name);
+		select(last_album, last_image);
 	else if (last == "album")
-		select(albums[last_album].name, "")
+		select(last_album, -1)
 	else
-		select("", "");
+		select(-1, -1);
 }
 
 function do_help() {
@@ -391,82 +388,71 @@ function keypressed(e) {
 	switch(k) {
 	case 33: // pgup
 		if (last == "image") {
-			var x = last_album;
-			var y = last_image;
-			select(albums[x].name, albums[x].images[Math.max(0, y - 5)].name);
+			select(last_album, Math.max(0, last_image - 5));
 		} else if (last == "album") {
 			if (last_album_section > 0) {
 				last_album_section--;
-				select(albums[last_album].name, "");
+				select(last_album, -1);
 			}
 		} else {
 			if (last_index_section > 0) {
 				last_index_section--;
-				select("", "");
+				select(-1, -1);
 			}
 		}
 		break;
 	case 34: // pgdn
 		if (last == "image") {
-			var x = last_album;
-			var y = last_image;
-			select(last_album, albums[x].images[Math.min( y + 5, albums[x].images.length - 1)].name);
+			select(last_album, Math.min( last_image + 5, albums[last_album].images.length - 1));
 		} else if (last == "album") {
-			var x = last_album;
-			if (last_album_section < Math.floor((albums[x].images.length - 1) / (size_a * size_al))) {
+			if (last_album_section < Math.floor((albums[last_album].images.length - 1) / (size_a * size_al))) {
 				last_album_section++;
-				select(albums[x].name, "");
+				select(last_album, -1);
 			}
 		} else {
 			if (last_index_section < Math.floor(albums.length / size_i)) {
 				last_index_section++;
-				select("", "");
+				select(-1, -1);
 			}
 		}
 		break;
 	case 35: // end
 		if (last == "image") {
-			var x = last_album;
-			select(last_album, albums[x].images[albums[x].images.length - 1].name);
+			select(last_album, albums[last_album].images.length - 1);
 		} else if (last == "album") {
-			var x = last_album;
-			last_album_section = Math.floor((albums[x].images.length - 1) / (size_a * size_al));
-			select(albums[x].name, "");
+			last_album_section = Math.floor((albums[last_album].images.length - 1) / (size_a * size_al));
+			select(last_album, -1);
 		} else {
 			last_index_section = Math.floor((albums.length - 1) / size_i);
-			select("", "");
+			select(-1, -1);
 		}
 		break;
 	case 36: // home
 		if (last == "image") {
-			var x = last_album;
-			select(albums[x].name, albums[x].images[0].name);
+			select(last_album, 0);
 		} else if (last == "album") {
 			last_album_section = 0;
-			select(albums[last_album].name, "");
+			select(last_album, -1);
 		} else {
 			last_index_section = 0;
-			select("", "");
+			select(-1, -1);
 		}
 		break;
 	case 78: // n
 	case 32: // space
 	case 39: // right
 		if (last == "image") {
-			var x = last_album;
-			var y = last_image;
-			if (y < albums[x].images.length - 1)
-				select(albums[x].name, albums[x].images[y+1].name);
+			if (last_image < albums[last_album].images.length - 1)
+				select(last_album, last_image+1);
 		} else if (last == "album") {
-			var x = last_album;
-			if (last_album_section < Math.floor((albums[x].images.length - 1) / (size_a * size_al))) {
+			if (last_album_section < Math.floor((albums[last_album].images.length - 1) / (size_a * size_al))) {
 				last_album_section++;
-				select(albums[x].name, "");
+				select(last_album, -1);
 			}
 		} else {
 			if (last_index_section < Math.floor(albums.length / size_i)) {
 				last_index_section++;
-				select("", "");
+				select(-1, -1);
 			}
 		}
 		break;
@@ -474,19 +460,17 @@ function keypressed(e) {
 	case 8:  // backspace
 	case 37: // left
 		if (last == "image") {
-			var x = last_album;
-			var y = last_image;
-			if (y > 0)
-				select(albums[x].name, albums[x].images[y-1].name);
+			if (last_image > 0)
+				select(last_album, last_image - 1);
 		} else if (last == "album") {
 			if (last_album_section > 0) {
 				last_album_section--;
-				select(albums[last_album].name, "");
+				select(last_album, -1);
 			}
 		} else {
 			if (last_index_section > 0) {
 				last_index_section--;
-				select("", "");
+				select(-1, -1);
 			}
 		}
 		break;
@@ -494,20 +478,20 @@ function keypressed(e) {
 	case 38: // up
 		if (last == "image") {
 			last = "album";
-			select(albums[last_album].name, "");
+			select(last_album, -1);
 		} else {
 			last = "index";
-			select("", "");
+			select(-1, -1);
 		}
 		break;
 	case 68: // d
 	case 40: // down
 		if (last == "index") {
 			last = "album";
-			select(albums[last_album].name, "");
+			select(last_album, -1);
 		} else {
 			last = "image";
-			select(albums[last_album].name, albums[last_album].images[last_image].name);
+			select(last_album, last_image);
 		}
 		break;
 	case 83: // s
@@ -588,6 +572,6 @@ for (x = 0; x < albums.length; x++) {
 
 function init() {
 	last_index_section = 0;
-	select("", "");
+	select(-1, -1);
 }
 
