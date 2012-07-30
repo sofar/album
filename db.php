@@ -5,6 +5,18 @@ $users = array (
 	"sserafin"
 );
 
+
+echo "var users = {\n";
+for ($x = 0; $x < count($users); $x++) {
+	$pw = posix_getpwnam($users[$x]);
+	echo $users[$x] . ": '" . $pw['gecos'] . "'";
+	if ($x < count($users) - 1)
+		echo ", ";
+	echo "\n";
+}
+echo "};\n\n";
+	
+
 # build a complex hash/array structure so we can download the
 # entire album content at once into the browser.
 echo "var albums = [\n";
