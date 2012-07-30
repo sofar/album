@@ -270,7 +270,7 @@ function select(a, i) {
 		document.getElementById('content').innerHTML = c;
 
 		var t = "";
-		t += "<a href=\"javascript:init()\">[index]</a>&nbsp;";
+		t += "<a href=\"javascript:select(&quot;&quot;, &quot;&quot;)\">[index]</a>&nbsp;";
 		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
 		t += "<a href=\"/" + albums[x].name + "/" + albums[x].images[y].name + "\">[" + albums[x].images[y].name + "]</a>&nbsp;";
 		t += "( " + (y + 1) + " / " + albums[x].images.length + " )\n";
@@ -448,7 +448,7 @@ function keypressed(e) {
 			select(last_album, "");
 		} else {
 			last_index_section = 0;
-			init();
+			select("", "");
 		}
 		break;
 	case 78: // n
