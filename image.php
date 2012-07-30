@@ -67,9 +67,9 @@ $image = $_GET['i'];
 
 $album = dirname($image);
 
-$cache_path = ".c/" . $album;
+$cache_base = "/var/cache/httpd";
+$cache_path = $cache_base . "/" . $album;
 $cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
-# FIXME we should size to one dimension, not x-y, just s(ize)
 
 if (!is_dir($cache_path))
 	mkdir($cache_path);
