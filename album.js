@@ -317,6 +317,11 @@ function do_help() {
 
 	c += "<h2>Photo Album Help</h2>\n";
 	c += "<pre>\n";
+
+	if (last_album >= 0) {
+		c += "Album owner: " + albums[last_album].owner + "\n\n";
+	}
+
 	c += "Keyboard navigation:\n\n";
 	c += "Key        Action\n"
 	c += "=========  ======\n"
