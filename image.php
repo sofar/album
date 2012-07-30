@@ -53,6 +53,29 @@ if (!function_exists("imagerotate")) {
 	}
 }
 
+function pass_file_and_exit($file) {
+	preg_match("'^(.*)\.(gif|jpe?g|png|thm)$'i", $file, $e);
+	switch (strtolower($e[2])) {
+	case 'jpg':
+	case 'jpeg':
+	case 'thm':
+		header("Content-type: image/jpeg");
+		break;
+	case 'gif':
+		header("Content-type: image/gif");
+		break;
+	case 'png':
+		header("Content-type: image/png");
+		break;
+	default:
+		exit;
+		break;
+	}
+	$fp = fopen($file, "r");
+	fpassthru($fp);
+	fclose($fp);
+	exit;
+}
 
 $max_size = 800;
 
@@ -66,6 +89,13 @@ if (isset($_GET['u']))
 	$user = $_GET['u'];
 
 $album = dirname($image);
+
+# passtrhru unsized?
+if ($size == 0) {
+	$o = "/home/" . $u . "/album/" . $image;
+	if (file_exists($image))
+		pass_file_and_exit($image);
+}
 
 if ($size > $max_size)
 	$size = $max_size;
@@ -83,28 +113,8 @@ header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (80640 * 180)) . ' GMT', 
 preg_match("'^(.*)\.(gif|jpe?g|png|thm)$'i", $image, $ext);
 
 # fetch the (already rotated) cached file if present
-if (file_exists($cache_file)) {
-	switch (strtolower($ext[2])) {
-	case 'jpg':
-	case 'jpeg':
-	case 'thm':
-		header("Content-type: image/jpeg");
-		break;
-	case 'gif':
-		header("Content-type: image/gif");
-		break;
-	case 'png':
-		header("Content-type: image/png");
-		break;
-	default:
-		exit;
-		break;
-	}
-	$fp = fopen($cache_file, "r");
-	fpassthru($fp);
-	fclose($fp);
-	exit;
-}
+if (file_exists($cache_file))
+	pass_file_and_exit($cache_file);
 
 
 $exif = exif_read_data($image, 0, true);

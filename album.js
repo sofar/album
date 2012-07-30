@@ -38,7 +38,7 @@ function get_thumb_of(name) {
 }
 
 function imgurl(x, y, size) {
-	return "image.php?r=1&s=" + size + "&i=" + albums[x].name + "/" + get_thumb_of(albums[x].images[y].name);
+	return "image.php?r=1&u=" + albums[x].owner + "&s=" + size + "&i=" + albums[x].name + "/" + get_thumb_of(albums[x].images[y].name);
 }
 
 function preload(x, y, size) {
