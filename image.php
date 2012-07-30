@@ -91,10 +91,10 @@ if (isset($_GET['u']))
 $album = dirname($image);
 
 # passtrhru unsized?
+$obj = "/home/" . $user . "/album/" . $image;
 if ($size == 0) {
-	$o = "/home/" . $user . "/album/" . $image;
-	if (file_exists($image))
-		pass_file_and_exit($image);
+	if (file_exists($obj))
+		pass_file_and_exit($obj);
 }
 
 if ($size > $max_size)
@@ -107,7 +107,7 @@ $cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
 if (!is_dir($cache_path))
 	mkdir($cache_path);
 
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($image)).' GMT', true, 200);
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($obj)).' GMT', true, 200);
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (80640 * 180)) . ' GMT', true, 200);
 
 preg_match("'^(.*)\.(gif|jpe?g|png|thm)$'i", $image, $ext);
@@ -117,7 +117,7 @@ if (file_exists($cache_file))
 	pass_file_and_exit($cache_file);
 
 
-$exif = exif_read_data($image, 0, true);
+$exif = exif_read_data($obj, 0, true);
 $o = 0;
 if (is_array($exif)) {
 	if (array_key_exists('IFD0', $exif)) {
@@ -131,15 +131,15 @@ switch (strtolower($ext[2])) {
 case 'jpg':
 case 'jpeg':
 case 'thm':
-	$im  = imagecreatefromjpeg($image);
+	$im  = imagecreatefromjpeg($obj);
 	header("Content-type: image/jpeg");
 	break;
 case 'gif':
-	$im  = imagecreatefromgif($image);
+	$im  = imagecreatefromgif($obj);
 	header("Content-type: image/gif");
 	break;
 case 'png' :
-	$im  = imagecreatefrompng($image);
+	$im  = imagecreatefrompng($obj);
 	header("Content-type: image/png");
 	break;
 default:
@@ -147,7 +147,7 @@ default:
 	break;
 }
 
-list($width_orig, $height_orig) = getimagesize($image);
+list($width_orig, $height_orig) = getimagesize($obj);
 
 $ratio_orig = $width_orig / $height_orig;
 
