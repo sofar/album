@@ -54,7 +54,7 @@ if (!function_exists("imagerotate")) {
 }
 
 function pass_file_and_exit($file) {
-	preg_match("'^(.*)\.(gif|jpe?g|png|thm)$'i", $file, $e);
+	preg_match("'^(.*)\.(gif|jpe?g|png|thm|ogv|mp4)$'i", $file, $e);
 	switch (strtolower($e[2])) {
 	case 'jpg':
 	case 'jpeg':
@@ -66,6 +66,12 @@ function pass_file_and_exit($file) {
 		break;
 	case 'png':
 		header("Content-type: image/png");
+		break;
+	case 'ogv':
+		header("Content-type: video/ogg");
+		break;
+	case 'mp4':
+		header("Content-type: video/mp4");
 		break;
 	default:
 		exit;

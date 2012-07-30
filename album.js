@@ -123,12 +123,12 @@ function object(a, i) {
 	if (o.match(".mp4") || o.match(".MP4")) {
 		// Video display
 		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls><source src=\"" + albums[a].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "<video controls><source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
 		r += "</div>\n";
 	} else if ( o.match(".ogv") || o.match(".OGV")) {
 		// Video display
 		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls><source src=\"" + albums[a].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "<video controls><source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
 		r += "</div>\n";
 	} else {
 		// image display
