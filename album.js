@@ -37,13 +37,13 @@ function get_thumb_of(name) {
 	return name;
 }
 
-function imgurl(x, y, size) {
-	return "image.php?r=1&u=" + albums[x].owner + "&s=" + size + "&i=" + albums[x].name + "/" + get_thumb_of(albums[x].images[y].name);
+function imgurl(a, i, size) {
+	return "image.php?r=1&u=" + albums[a].owner + "&s=" + size + "&i=" + albums[a].name + "/" + get_thumb_of(albums[a].images[i].name);
 }
 
-function preload(x, y, size) {
+function preload(a, i, size) {
 	preloads[preloads.length] = new Image();
-	preloads[preloads.length - 1].src = imgurl(x, y, size);
+	preloads[preloads.length - 1].src = imgurl(a, i, size);
 }
 
 function format_is_supported(name) {
@@ -78,9 +78,9 @@ function find_album(a) {
 	return -1;
 }
 
-function find_image(x, i) {
-	for (y = 0; y < albums[x].images.length; y++)
-		if (albums[x].images[y].name == i)
+function find_image(a, i) {
+	for (y = 0; y < albums[a].images.length; y++)
+		if (albums[a].images[y].name == i)
 			return y;
 	return -1;
 }
