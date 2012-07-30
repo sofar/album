@@ -1,10 +1,19 @@
 <?
 
-	# build a complex hash/array structure so we can download the
-	# entire album content at once into the browser.
-	echo "var albums = [\n";
+$users = array (
+	"sofar",
+	"sserafin"
+);
 
-	$ah = opendir(getcwd());
+# build a complex hash/array structure so we can download the
+# entire album content at once into the browser.
+echo "var albums = [\n";
+
+foreach ($users as $user) {
+	$d = "/home/" . $user . "/album";
+	if (!is_dir($d))
+		continue;
+	$ah = opendir($d);
 	$album = readdir($ah);
 	while ($album) {
 		# FIXME: add recursive album support
@@ -12,11 +21,15 @@
 			$album = readdir($ah);
 			continue;
 		}
-		echo "{ name: '" . $album . "', images: [\n";
+		echo "{ name: '" . $album . "', owner: '" . $user . "', images: [\n";
 
 		$ih = opendir(getcwd() . "/" . $album);
 		$image = readdir($ih);
 		while ($image) {
+			if (is_dir($image) || ($image{0} == ".")) {
+				$image = readdir($ih);
+				continue;
+			}
 			if ((!is_file(getcwd() . "/" . $album . "/" . $image)) ||
 			    (preg_match('/[.]avi$/', $image)) ||
 			    (preg_match('/[.]AVI$/', $image)) ||
@@ -44,6 +57,8 @@
 		else
 			echo " ";
 	}
-	echo " ]\n";
 	closedir($ah);
+}
+echo " ]\n";
+
 ?>
