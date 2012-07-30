@@ -276,7 +276,7 @@ function select(a, i) {
 		var t = "";
 		t += "<a href=\"javascript:select(&quot;&quot;, &quot;&quot;)\">[index]</a>&nbsp;";
 		t += "<a href=\"javascript:select(&quot;" + a + "&quot;, &quot;&quot;)\">[" + a + "]</a>&nbsp;";
-		t += "<a href=\"/" + albums[x].name + "/" + albums[x].images[y].name + "\">[" + albums[x].images[y].name + "]</a>&nbsp;";
+		t += "<a href=\"/" + imgurl(x, y, 0) + "\">[" + albums[x].images[y].name + "]</a>&nbsp;";
 		t += "( " + (y + 1) + " / " + albums[x].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
