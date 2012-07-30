@@ -9,8 +9,8 @@ $users = array (
 # entire album content at once into the browser.
 echo "var albums = [\n";
 
-foreach ($users as $user) {
-	$d = "/home/" . $user . "/album";
+for ($x = 0; $x < count($users); $x++) {
+	$d = "/home/" . $users[$x] . "/album";
 	if (!is_dir($d))
 		continue;
 	$ah = opendir($d);
@@ -21,7 +21,7 @@ foreach ($users as $user) {
 			$album = readdir($ah);
 			continue;
 		}
-		echo "{ name: '" . $album . "', owner: '" . $user . "', images: [\n";
+		echo "{ name: '" . $album . "', owner: '" . $users[$x] . "', images: [\n";
 
 		$ih = opendir($d . "/" . $album);
 		$image = readdir($ih);
@@ -52,7 +52,7 @@ foreach ($users as $user) {
 		echo " ] }\n";
 
 		$album = readdir($ah);
-		if ($album)
+		if ($album || ($x < count($users)))
 			echo ", ";
 		else
 			echo " ";
