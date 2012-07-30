@@ -21,9 +21,29 @@ var size_a = 5;   // thumblines on the album page
 var size_al = 5;  // thumbs per line on the album page
 var size_n = 4;   // navigation line size either way on image page
 
+function get_thumb_of(name) {
+	if (name.match(".ogv"))
+		return name.replace(".ogv", ".thm");
+	if (name.match(".OGV"))
+		return name.replace(".OGV", ".thm");
+	if (name.match(".mp4"))
+		return name.replace(".mp4", ".thm");
+	if (name.match(".MP4"))
+		return name.replace(".MP4", ".thm");
+	if (name.match(".avi"))
+		return name.replace(".avi", ".thm");
+	if (name.match(".AVI"))
+		return name.replace(".AVI", ".thm");
+	return name;
+}
+
+function imgurl(x, y, size) {
+	return "image.php?r=1&s=" + size + "&i=" + albums[x].name + "/" + get_thumb_of(albums[x].images[y].name);
+}
+
 function preload(x, y, size) {
 	preloads[preloads.length] = new Image();
-	preloads[preloads.length - 1].src = "image.php?r=1&s=" + size + "&i=" + albums[x].name + "/" + albums[x].images[y].name;
+	preloads[preloads.length - 1].src = imgurl(x, y, size);
 }
 
 function format_is_supported(name) {
@@ -49,22 +69,6 @@ function format_is_supported(name) {
 
 	// The rest is always supported
 	return true;
-}
-
-function get_thumb_of(name) {
-	if (name.match(".ogv"))
-		return name.replace(".ogv", ".thm");
-	if (name.match(".OGV"))
-		return name.replace(".OGV", ".thm");
-	if (name.match(".mp4"))
-		return name.replace(".mp4", ".thm");
-	if (name.match(".MP4"))
-		return name.replace(".MP4", ".thm");
-	if (name.match(".avi"))
-		return name.replace(".avi", ".thm");
-	if (name.match(".AVI"))
-		return name.replace(".AVI", ".thm");
-	return name;
 }
 
 function find_album(a) {
@@ -108,7 +112,7 @@ function thumb(a, i, s) {
 	if (s != 0)
 		r += "class=\"selected\" ";
 	r += "alt=\"" + albums[a].images[i].name + "\" ";
-	r += "style=\"vertical-align: middle;\" src=\"image.php?r=1&amp;s=100&amp;i=" + albums[a].name + "/" + t +"\" /></a>";
+	r += "style=\"vertical-align: middle;\" src=\"" + imgurl(a, i, 100) + "\" /></a>";
 	return block(r);
 }
 
@@ -136,7 +140,7 @@ function object(x, y) {
 			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(&quot;" + albums[x].name + "&quot, &quot;" + albums[x].images[y+1].name + "&quot;)\" />\n";
 		r += "</map>\n";
 
-		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"image.php?r=1&amp;s=800&amp;i=" + albums[x].name + "/" + o + "\" />\n";
+		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(x, y, 800) + "\" />\n";
 		r += "</div>\n";
 	}
 	return r;

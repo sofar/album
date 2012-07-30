@@ -62,6 +62,9 @@ $resample = $_GET['r'];
 
 $image = $_GET['i'];
 
+if (isset($_GET['u']))
+	$user = $_GET['u'];
+
 $album = dirname($image);
 
 if ($size > $max_size)
