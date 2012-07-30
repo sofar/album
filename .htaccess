@@ -1,4 +1,12 @@
 
+AuthName "Private Area - Restricted Access"
+AuthType Basic
+AuthUserFile /var/www/htdocs-ssl/.htpasswd
+Require valid-user
+
+AddType audio/ogg oga ogg
+AddType video/ogg ogv All
+
 RewriteEngine on
 
 # rewrite album folder names to album.php serving code
@@ -6,4 +14,3 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteCond %{REQUEST_URI} !^$
 RewriteCond %{REQUEST_URI} !^/$
 RewriteRule ^(.*)/(.*)$ /index.php?a=$1&i=$2
-
