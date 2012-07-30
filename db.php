@@ -52,7 +52,7 @@ for ($x = 0; $x < count($users); $x++) {
 		echo " ] }\n";
 
 		$album = readdir($ah);
-		if ($album || ($x < count($users)))
+		if ($album || ($x < count($users) - 1))
 			echo ", ";
 		else
 			echo " ";
