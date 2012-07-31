@@ -5,15 +5,15 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	background-color: #181818;
-	color: #c0c0c0;
+	background-color: #333;
+	color: #ccc;
 }
 A:link, A:visited, A:active {
-	color: #c0c0c0;
+	color: #ccc;
 	text-decoration: none;
 }
 A:hover {
-	color: #ffffff;
+	color: #fff;
 	text-decoration: underline;
 }
 img.arrow {
@@ -21,13 +21,13 @@ img.arrow {
 	vertical-align: text-top;
 }
 img {
-	border: solid 2px #c0c0c0;
+	border: solid 2px #ccc;
 }
 img:hover {
-	border: solid 8px #ffffff;
+	border: solid 8px #fff;
 }
 .selected {
-	border: solid 8px #ffffff;
+	border: solid 8px #fff;
 }
 .thm {
 	border-style: dotted;
