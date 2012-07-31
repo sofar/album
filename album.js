@@ -172,7 +172,7 @@ function select(a, i) {
 		}
 		c += "</div>\n";
 		if (last_index_section + 1 < albums.length / size_i)
-			c += rblock("<a href=\"javascript:last_index_section++; (-1, -1)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+			c += rblock("<a href=\"javascript:last_index_section++; select(-1, -1)\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 		else
 			c += rblock("&nbsp;");
 		c += "</div>";
@@ -255,7 +255,7 @@ function select(a, i) {
 		// image
 		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
 		if (i > 0)
-			c += block("<a href=\"javascript:select(" + a + ", " + (i-1) + "&quot;)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+			c += block("<a href=\"javascript:select(" + a + ", " + (i-1) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
 		c += object(a,i);
