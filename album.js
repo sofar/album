@@ -513,14 +513,6 @@ function keypressed(e) {
 	case 72: // h
 		do_help();
 		break;
-	case 49:
-		size_n = (size_n == 0) ? 0 : size_n - 1;
-		repaint();
-		break
-	case 50:
-		size_n++;
-		repaint();
-		break
 	default:
 		// alert(k);
 		break;
