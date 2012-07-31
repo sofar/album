@@ -43,9 +43,26 @@ img:hover {
 .owner {
 	font-size: 66%;
 }
+#image {
+	display: inline-block;
+}
 #title {
 	text-align: center;
 }
 #content {
 	text-align: center;
+}
+#fullscreen {
+	height: 100%;
+}
+#navigation {
+	display: inline-block;
+	text-align: left;
+}
+#block {
+	display: inline-block;
+	float: left;
+	height: 120px;
+	width: 120px;
+	line-height: 120px;
 }

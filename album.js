@@ -4,6 +4,7 @@ var last_album = -1;
 var last_image = -1;
 var last_index_section = 0;
 var last_album_section = 0;
+var fullscreen = false;
 var slideshow = false;
 var slideshowinterval;
 var slideshowspeed = 5;
@@ -86,14 +87,11 @@ function find_image(a, i) {
 }
 
 function block(b) {
-	var r = "<div style=\"display: inline-block; float: left; height: 120px; width: 120px; line-height: 120px;\">" +
-		b +
-		"</div>\n";
-	return r;
+	return "<div id=\"block\">" + b + "</div>\n";
 }
 
 function rblock(b) {
-	var r = "<div style=\"display: inline-block; float: right; height: 120px; width: 120px; line-height: 120px;\">" +
+	var r = "<div id=\"block\" style=\"float: right;\">" +
 		b +
 		"</div>\n";
 	return r;
@@ -132,16 +130,20 @@ function object(a, i) {
 		r += "</div>\n";
 	} else {
 		// image display
-		r += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
-		r += "<map name=\"map-" + o + "\">\n";
-		if (i > 0)
-			r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(" + a + ", " + (i-1) + ")\" />\n";
-		if (i < albums[a].images.length - 1)
-			r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(" + a + ", " + (i+1) + ")\" />\n";
-		r += "</map>\n";
+		if (!fullscreen) {
+			r += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
+			r += "<map name=\"map-" + o + "\">\n";
+			if (i > 0)
+				r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(" + a + ", " + (i-1) + ")\" />\n";
+			if (i < albums[a].images.length - 1)
+				r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(" + a + ", " + (i+1) + ")\" />\n";
+			r += "</map>\n";
 
-		r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
-		r += "</div>\n";
+			r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
+			r += "</div>\n";
+		} else {
+			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
+		}
 	}
 	return r;
 }
@@ -235,36 +237,44 @@ function select(a, i) {
 		// display image
 		var c = "";
 
-		// navigation
-		c += "<div id=\"navigation\" style=\"display: inline-block;\">\n";
-		if (i > size_n)
-			c += block("<a href=\"javascript:select(" + a + ", " + (i-size_n) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
-		else
-			c += block("&nbsp;");
-		for (z = Math.max(0, i - size_n); z <= Math.min(i + size_n, albums[a].images.length - 1); z++) {
-			c += thumb(a, z, (z == i));
-		}
-		if (i <= albums[a].images.length - (size_n + 1)) {
-			preload(a, i+size_n, 100);
-			c += rblock("<a href=\"javascript:select(" + a + ", " + (i+size_n) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
-		} else
-			c += rblock("&nbsp;");
-		c += "</div>\n";
-		c += "<div style=\"clear: both;\"></div>\n";
+		if (!fullscreen) {
+			// navigation
+			c += "<div id=\"navigation\" style=\"display: inline-block;\">\n";
+			if (i > size_n)
+				c += block("<a href=\"javascript:select(" + a + ", " + (i-size_n) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+			else
+				c += block("&nbsp;");
+			for (z = Math.max(0, i - size_n); z <= Math.min(i + size_n, albums[a].images.length - 1); z++) {
+				c += thumb(a, z, (z == i));
+			}
+			if (i <= albums[a].images.length - (size_n + 1)) {
+				preload(a, i+size_n, 100);
+				c += rblock("<a href=\"javascript:select(" + a + ", " + (i+size_n) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+			} else
+				c += rblock("&nbsp;");
+			c += "</div>\n";
+			c += "<div style=\"clear: both;\"></div>\n";
 
-		// image
-		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
-		if (i > 0)
-			c += block("<a href=\"javascript:select(" + a + ", " + (i-1) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
-		else
-			c += block("&nbsp;");
-		c += object(a,i);
-		if (i < albums[a].images.length - 1) {
-			preload(a, i+1, 800);
-			c += rblock("<a href=\"javascript:select(" + a + ", " + (i+1) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
-		} else
-			c += rblock("&nbsp;");
-		c += "<div style=\"clear: both;\"></div>\n";
+			// image
+			c += "<div id=\"image\" style=\"display: inline-block;\">\n";
+			if (i > 0)
+				c += block("<a href=\"javascript:select(" + a + ", " + (i-1) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+			else
+				c += block("&nbsp;");
+			c += object(a,i);
+			if (i < albums[a].images.length - 1) {
+				preload(a, i+1, 800);
+				c += rblock("<a href=\"javascript:select(" + a + ", " + (i+1) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+			} else
+				c += rblock("&nbsp;");
+			c += "<div style=\"clear: both;\"></div>\n";
+		} else {
+			if (i < albums[a].images.length - 1)
+				preload(a, i+1, 800);
+			c += "<div id=\"fullscreen\">\n";
+			c += object(a,i);
+			c += "<div style=\"clear: both;\"></div>\n";
+		}
 
 		c += "</div>\n";
 
@@ -304,6 +314,11 @@ function repaint() {
 		select(-1, -1);
 }
 
+function do_fullscreen() {
+	fullscreen = !fullscreen;
+	repaint();
+}
+
 function do_help() {
 	var c = "";
 	if (help) {
@@ -313,7 +328,7 @@ function do_help() {
 	}
 	help = true;
 
-	c += "<div id=\"navigation\" style=\"display: inline-block; text-align: left;\">\n";
+	c += "<div id=\"navigation\">\n";
 
 	c += "<h2>Photo Album Help</h2>\n";
 	c += "<pre>\n";
@@ -337,7 +352,8 @@ function do_help() {
 	c += "p          Go to the previous page or photo\n";
 	c += "Backspace  Go to the previous page or photo\n";
 	c += "Up         Go back to the album or index\n\n";
-	c += "s          Start or stop the slideshow\n\n";
+	c += "s          Start or stop the slideshow\n";
+	c += "f          Toggle fullscreen display\n";
 	c += "h          Show or leave this help screen\n\n";
 
 	c += "Settings\n";
@@ -509,6 +525,9 @@ function keypressed(e) {
 				slideshowinterval = window.setInterval(run_slideshow, slideshowspeed * 1000);
 			}
 		}
+		break;
+	case 70: // f
+		do_fullscreen();
 		break;
 	case 72: // h
 		do_help();
