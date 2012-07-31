@@ -5,7 +5,7 @@ $users = array (
 	"sserafin"
 );
 
-
+# add list of users and their real names.
 echo "var users = {\n";
 for ($x = 0; $x < count($users); $x++) {
 	$pw = posix_getpwnam($users[$x]);
@@ -15,7 +15,7 @@ for ($x = 0; $x < count($users); $x++) {
 	echo "\n";
 }
 echo "};\n\n";
-	
+
 
 # build a complex hash/array structure so we can download the
 # entire album content at once into the browser.
