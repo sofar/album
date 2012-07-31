@@ -114,6 +114,17 @@ function thumb(a, i, s) {
 	return block(r);
 }
 
+function fs(image) {
+	var p = document.body;
+	var w = p.clientWidth - 20; // margin
+	var h = p.clientHeight - 20 - 40; // margin + navigation
+	var iw = image.offsetWidth;
+	var ih = image.offsetHeight;
+	var ratio = Math.min(w / iw, h / ih);
+	image.width = iw * ratio;
+	image.height = ih * ratio;
+}
+
 function object(a, i) {
 	var r = "";
 	var o = albums[a].images[i].name;
@@ -142,7 +153,7 @@ function object(a, i) {
 			r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
 			r += "</div>\n";
 		} else {
-			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
+			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" onload=\"fs(this);\"/>\n";
 		}
 	}
 	return r;
