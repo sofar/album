@@ -163,7 +163,7 @@ function select(a, i) {
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: left; width: 620px;\">\n";
 		for (x = s_start; x < s_end; x++) {
-			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(" + x + ", -1)\">" + albums[x].name + "</a></div>\n";
+			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(" + x + ", -1)\">" + albums[x].name + "</a><i class=\"owner\">&nbsp;-&nbsp;" + users[albums[x].owner] + "</i></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
 			for (y = 0; y < Math.min(size_il, albums[x].images.length); y++) {
 				c += thumb(x, y, 0);
