@@ -16,10 +16,6 @@ A:hover {
 	color: #fff;
 	text-decoration: underline;
 }
-img.arrow {
-	border-width: 0px;
-	vertical-align: text-top;
-}
 img {
 	border: solid 2px #ccc;
 }
@@ -28,6 +24,14 @@ img:hover {
 }
 .selected {
 	border: solid 8px #fff;
+}
+.arrow {
+	border-width: 0px;
+	vertical-align: text-top;
+}
+.arrow:hover {
+	border-width: 0px;
+	vertical-align: text-top;
 }
 .thm {
 	border-style: dotted;
