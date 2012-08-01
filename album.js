@@ -294,7 +294,7 @@ function select(a, i) {
 		var t = "";
 		t += "<a href=\"javascript:select(-1, -1)\">[index]</a>&nbsp;";
 		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + albums[a].name + "]</a>&nbsp;";
-		t += "<a href=\"/" + imgurl(a, i, 0) + "\">[" + albums[a].images[i].name + "]</a>&nbsp;";
+		t += "<a href=\"/image.php?u=" + albums[a].owner + "&r=0&s=0&i=" + albums[a].name + "/" + albums[a].images[i].name + "\">[" + albums[a].images[i].name + "]</a>&nbsp;";
 		t += "( " + (i + 1) + " / " + albums[a].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
