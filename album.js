@@ -118,8 +118,8 @@ function fs(image) {
 	var p = document.body;
 	var w = p.clientWidth - 20; // margin
 	var h = p.clientHeight - 20 - 40; // margin + navigation
-	var iw = image.offsetWidth;
-	var ih = image.offsetHeight;
+	var iw = image.naturalWidth;
+	var ih = image.naturalHeight;
 	var ratio = Math.min(w / iw, h / ih);
 	image.width = iw * ratio;
 	image.height = ih * ratio;
