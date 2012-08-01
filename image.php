@@ -77,9 +77,8 @@ function pass_file_and_exit($file) {
 		exit;
 		break;
 	}
-	$fp = fopen($file, "r");
-	fpassthru($fp);
-	fclose($fp);
+	header("Content-length: ".filesize($file));
+	readfile($file);
 	exit;
 }
 
