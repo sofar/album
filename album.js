@@ -114,6 +114,13 @@ function thumb(a, i, s) {
 	return block(r);
 }
 
+function fsz() {
+	// For really large displays, display the native format
+	if ((document.body.clientWidth > 1200) && (document.body.clientHeight > 1200))
+		return 0;
+	return 800;
+}
+
 function fs(image) {
 	var p = document.body;
 	var w = p.clientWidth - 20; // margin
@@ -153,7 +160,7 @@ function object(a, i) {
 			r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
 			r += "</div>\n";
 		} else {
-			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" onload=\"fs(this);\"/>\n";
+			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, fsz()) + "\" onload=\"fs(this);\"/>\n";
 		}
 	}
 	return r;
@@ -274,14 +281,14 @@ function select(a, i) {
 				c += block("&nbsp;");
 			c += object(a,i);
 			if (i < albums[a].images.length - 1) {
-				preload(a, i+1, 800);
+				preload(a, i+1, fsz());
 				c += rblock("<a href=\"javascript:select(" + a + ", " + (i+1) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 			} else
 				c += rblock("&nbsp;");
 			c += "<div style=\"clear: both;\"></div>\n";
 		} else {
 			if (i < albums[a].images.length - 1)
-				preload(a, i+1, 800);
+				preload(a, i+1, fsz());
 			c += "<div id=\"fullscreen\">\n";
 			c += object(a,i);
 			c += "<div style=\"clear: both;\"></div>\n";
