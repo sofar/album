@@ -181,7 +181,7 @@ function select(a, i) {
 			c += block("<a href=\"javascript:last_index_section--; select(-1, -1)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		c += "<div style=\"display: inline-block; float: left; width: 620px;\">\n";
+		c += "<div style=\"display: inline-block; float: left; width: " + ((size_il * 120) + 20 ) + "px;\">\n";
 		for (x = s_start; x < s_end; x++) {
 			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(" + x + ", -1)\">" + albums[x].name + "</a><i class=\"owner\">&nbsp;-&nbsp;" + users[albums[x].owner] + "</i></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
@@ -223,7 +223,7 @@ function select(a, i) {
 			c += block("<a href=\"javascript:last_album_section--; select(" + a + ", -1)\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
 		else
 			c += block("&nbsp;");
-		c += "<div style=\"display: inline-block; width: 620px;\">\n";
+		c += "<div style=\"display: inline-block; width: " + ((size_al * 120) + 20) + "px;\">\n";
 		for (y = s_start; y < s_end; y++ ) {
 			if (y % size_al == 0)
 				c += "<div style=\"display: inline-block; float:left; height: 120px; width: 0px; display: table-cell; line-height: 120px; vertical-align: middle;\"></div>\n";
