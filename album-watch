@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+export IFS=$'\n '
+
+inotifywait -e close_write -e create -r -m --format "%e %w%f" /home/*/album | while read EVENT FILE ; do
+	if [ "$EVENT" == "CREATE,ISDIR" ]; then
+		exec $0
+	fi
+	if [ "$EVENT" != "CLOSE_WRITE,CLOSE" -o ! -f "$FILE" ]; then
+		continue
+	fi
+	if echo "$FILE" | grep -q -e '[.]\(avi\|AVI\|mpg\|MPG\|ogv\|OGV\|mp4\|MP4\)$' ; then
+		BASE=$(echo "$FILE" | sed 's/[.]\([a-zA-Z0-9]*\)$//')
+		if [ $? != 0 ]; then
+			continue
+		fi
+		OWNER=$(stat --format=%U "$FILE")
+		if [ $? != 0 ]; then
+			continue
+		fi
+		if [ ! -f "$BASE.thm" ]; then
+			echo "$0: generating $BASE.thm"
+			sudo -u $OWNER ffmpeg -i "$FILE" -ss 0 -vframes 1 -f mjpeg -an "$BASE.thm.in" > /dev/null 2>&1
+			sudo -u $OWNER convert "$BASE.thm.in" -resize 100x100 "$BASE.thm" > /dev/null 2>&1
+			sudo -u $OWNER rm "$BASE.thm.in" > /dev/null 2>&1
+			sleep 1
+		fi
+		if [ ! -f "$BASE.ogv" ]; then
+			echo "$0: generating $BASE.ogv"
+			sudo -u $OWNER ffmpeg2theora "$FILE" -o "$BASE.ogv" > /dev/null 2>&1
+			sleep 1
+		fi
+		if [ ! -f "$BASE.mp4" ]; then
+			echo "$0: generating $BASE.mp4"
+			sudo -u $OWNER ffmpeg -i "$FILE" -vcodec libx264 "$BASE.mp4" > /dev/null 2>&1
+			sleep 1
+		fi
+	fi
+done
