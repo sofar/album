@@ -6,7 +6,8 @@ export IFS=$'\n '
 
 inotifywait -e close_write -e create -r -m --format "%e %w%f" /home/*/album | while read EVENT FILE ; do
 	if [ "$EVENT" == "CREATE,ISDIR" ]; then
-		exec $0
+		systemctl restart album-watch.service &
+		exit 0
 	fi
 	if [ "$EVENT" != "CLOSE_WRITE,CLOSE" -o ! -f "$FILE" ]; then
 		continue
@@ -39,3 +40,4 @@ inotifywait -e close_write -e create -r -m --format "%e %w%f" /home/*/album | wh
 		fi
 	fi
 done
+
