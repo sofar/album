@@ -30,9 +30,12 @@ $album = dirname($image);
 
 $obj = "/home/" . $user . "/album/" . $image;
 
-$exif = exif_read_data($obj, 0, true);
-if (is_array($exif)) {
-	echo "<pre>\n";
+$pw = posix_getpwnam($user);
+echo "Path: " . $image . "\n";
+echo "Owner: " . $pw['gecos'] . "\n\n";
+
+if (preg_match('/[.][jJ][pP][gG]$/', $obj)) {
+	$exif = exif_read_data($obj, 0, true);
 	foreach ($fields as $field => $name) {
 		list ($f1, $f2) = explode(".", $field);
 		if (isset($exif[$f1])) {
@@ -43,9 +46,8 @@ if (is_array($exif)) {
 	}
 	foreach ($output as $key => $val)
 		echo $key . ": " . $val . "\n";
-	echo "</pre>\n";
 } else {
-	echo "<p>The image contains no usable EXIV metadata</p>\n";
+	echo "The image contains no usable EXIV metadata\n";
 }
 
 ?>

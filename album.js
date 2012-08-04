@@ -22,6 +22,26 @@ var size_a = 5;   // thumblines on the album page
 var size_al = 5;  // thumbs per line on the album page
 var size_n = 4;   // navigation line size either way on image page
 
+function setCookie(name, value) {
+	var date = new Date();
+	date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+	var expires = "; expires=" + date.toGMTString();
+	document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ')
+			c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0)
+			return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
 function get_thumb_of(name) {
 	if (name.match(".ogv"))
 		return name.replace(".ogv", ".thm");
@@ -97,6 +117,22 @@ function rblock(b) {
 	return r;
 }
 
+function loadexif(o, a, i) {
+	if (window.XMLHttpRequest) {
+		request = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		request = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	request.onreadystatechange = function() {
+		if ((request.readyState == 4) && (request.status == 200)) {
+			title = request.responseText;
+			o.title = request.responseText;
+		}
+	};
+	request.open('GET', "exif.php?u=" + albums[a].owner + "&i=" + albums[a].name + "/" + albums[a].images[i].name, true);
+	request.send();
+}
+
 function thumb(a, i, s) {
 	var t = get_thumb_of(albums[a].images[i].name);
 	var r = "<a href=\"javascript:select(" + a + ", " + i + ")\">" +
@@ -110,6 +146,8 @@ function thumb(a, i, s) {
 	if (s != 0)
 		r += "class=\"selected\" ";
 	r += "alt=\"" + albums[a].images[i].name + "\" ";
+	r += "title=\"(loading image information)\" ";
+	r += "onMouseOver=\"loadexif(this, " + a + ", " + i + ")\" ";
 	r += "style=\"vertical-align: middle;\" src=\"" + imgurl(a, i, 100) + "\" /></a>";
 	return block(r);
 }
@@ -157,10 +195,10 @@ function object(a, i) {
 				r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(" + a + ", " + (i+1) + ")\" />\n";
 			r += "</map>\n";
 
-			r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" />\n";
+			r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" onmouseover=\"loadexif(this, " + a + ", " + i + ")\"/>\n";
 			r += "</div>\n";
 		} else {
-			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, fsz()) + "\" onload=\"fs(this);\"/>\n";
+			r += "<img class=\"selected\" alt=\"" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, fsz()) + "\" onload=\"fs(this);\" onmouseover=\"loadexif(this, " + a + ", " + i + ")\"/>\n";
 		}
 	}
 	return r;
@@ -332,8 +370,22 @@ function repaint() {
 		select(-1, -1);
 }
 
+function save_settings() {
+	setCookie("settings", "size_i=" + size_i + ",size_il=" + size_il + ",size_a=" + size_a + ",size_al=" + size_al + ",size_n=" + size_n + ",fullscreen=" + fullscreen + ",slideshowspeed=" + slideshowspeed);
+}
+
+function load_settings() {
+	var c = getCookie("settings");
+	if (c) {
+		var parts = c.split(",");
+		for (i = 0; i < parts.length; i++)
+			eval(parts[i]);
+	}
+}
+
 function do_fullscreen() {
 	fullscreen = !fullscreen;
+	save_settings();
 	repaint();
 }
 
@@ -341,6 +393,7 @@ function do_help() {
 	var c = "";
 	if (help) {
 		help = false;
+		save_settings();
 		repaint();
 		return;
 	}
@@ -605,6 +658,7 @@ for (x = 0; x < albums.length; x++) {
 }
 
 function init() {
+	load_settings();
 	last_index_section = 0;
 	select(-1, -1);
 }
