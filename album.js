@@ -383,6 +383,22 @@ function load_settings() {
 	}
 }
 
+function do_slideshow() {
+	if (slideshow) {
+		slideshow = false;
+		window.clearInterval(slideshowinterval);
+	} else {
+		if (help) {
+			help = false;
+			repaint();
+		}
+		if (last == "image") {
+			slideshow = true;
+			slideshowinterval = window.setInterval(run_slideshow, slideshowspeed * 1000);
+		}
+	}
+}
+
 function do_fullscreen() {
 	fullscreen = !fullscreen;
 	save_settings();
@@ -417,14 +433,16 @@ function do_help() {
 	c += "n          Go to the next page or photo\n";
 	c += "Space      Go to the next page or photo\n";
 	c += "Down       Go back into the album or image\n\n";
+
 	c += "Home       Go to the first page or photo\n";
 	c += "PgUp       Go to the previous page\n";
 	c += "Left       Go to the previous page or photo\n";
 	c += "p          Go to the previous page or photo\n";
 	c += "Backspace  Go to the previous page or photo\n";
 	c += "Up         Go back to the album or index\n\n";
-	c += "s          Start or stop the slideshow\n";
-	c += "f          Toggle fullscreen display\n";
+
+	c += "s          Start or stop the <u><a title=\"slideshow\" href=\"#\" onclick=\"do_slideshow();\">slideshow</a></u>\n";
+	c += "f          Toggle <u><a title=\"fullscreen\" href=\"#\" onclick=\"do_fullscreen();\">fullscreen</a></u> display\n";
 	c += "h          Show or leave this help screen\n\n";
 
 	c += "Settings\n";
@@ -587,15 +605,7 @@ function keypressed(e) {
 		}
 		break;
 	case 83: // s
-		if (slideshow) {
-			slideshow = false;
-			window.clearInterval(slideshowinterval);
-		} else {
-			if (last == "image") {
-				slideshow = true;
-				slideshowinterval = window.setInterval(run_slideshow, slideshowspeed * 1000);
-			}
-		}
+		do_slideshow();
 		break;
 	case 70: // f
 		do_fullscreen();
