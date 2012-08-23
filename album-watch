@@ -28,14 +28,14 @@ inotifywait -e close_write -e create -r -m --format "%e %w%f" /home/*/album | wh
 			sudo -u $OWNER rm "$BASE.thm.in" > /dev/null 2>&1
 			sleep 1
 		fi
-		if [ ! -f "$BASE.ogv" ]; then
-			echo "$0: generating $BASE.ogv"
-			sudo -u $OWNER ffmpeg2theora "$FILE" -o "$BASE.ogv" > /dev/null 2>&1
-			sleep 1
-		fi
 		if [ ! -f "$BASE.mp4" ]; then
 			echo "$0: generating $BASE.mp4"
 			sudo -u $OWNER ffmpeg -i "$FILE" -vcodec libx264 "$BASE.mp4" > /dev/null 2>&1
+			sleep 1
+		fi
+		if [ ! -f "$BASE.ogv" ]; then
+			echo "$0: generating $BASE.ogv"
+			sudo -u $OWNER ffmpeg2theora "$BASE.mp4" -o "$BASE.ogv" > /dev/null 2>&1
 			sleep 1
 		fi
 	fi
