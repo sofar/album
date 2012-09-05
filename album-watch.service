@@ -1,0 +1,15 @@
+
+[Unit]
+Description=Album helper - process video files on demand
+After=network.target
+
+[Service]
+ExecStart=/var/www/htdocs/album-watch
+Restart=always
+RestartSec=1
+Nice=19
+OOMScoreAdjust=500
+
+
+[Install]
+WantedBy=multi-user.target
