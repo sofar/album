@@ -485,6 +485,10 @@ function do_help() {
 	c += "ogg  : " + (supports_ogg ? "yes" : "no") + "\n";
 	c += "webm : " + (supports_webm ? "yes" : "no") + "\n";
 
+	c += "\n\n";
+
+	c += "<h2><a href=\"/UPLOAD.txt\">Uploading instructions</a></h2>\n";
+
 	c += "</pre>\n";
 	c += "</div>\n";
 	document.getElementById('content').innerHTML = c;
