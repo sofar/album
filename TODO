@@ -1,0 +1,4 @@
+
+- Replace album-watch with a C-based inotify daemon
+- Proper installation instructions
+- Map out apache/php5 requirements
