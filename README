@@ -1,0 +1,40 @@
+
+Album - a simple and sturdy HTML5/Js photo web album
+
+This code is (C) 2010-2012 - Auke Kok <auke@foo-projects.org>
+
+===
+
+
+Why yet another web photo album?
+
+There are many excellent photo albums on the web. Some are trivial,
+some are complex.  None of them worked for me. Complex is great, it
+means many features, but also fragility and complexity in setting up,
+including many obscure requirements.
+
+After yet another gallery database crash wiping out my 10k large
+private collection database, I realized that DB's are evil for
+something that should be simple.
+
+So, I set out to make a trivial, fast and simple photo album leveraging
+the browser and a mostly vanilla apache+php setup, without database.
+
+Design considerations:
+
+- no DB
+- on demand thumbnail generation
+- server side caching of thumbnails
+- no page reloading ever
+- html5 video support
+- image preloading to improve album browsing speed
+- keyboard navigation enabled
+- slideshow support
+
+
+===
+
+
+How to install?
+
+
