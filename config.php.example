@@ -1,0 +1,11 @@
+<?
+
+# edit this file to include the usernames of users that are allowed to
+# have their albums appear in the index.
+
+$users = array (
+	"adam",
+	"bonnie"
+);
+
+?>

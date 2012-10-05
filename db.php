@@ -1,9 +1,8 @@
 <?
 
-$users = array (
-	"sofar",
-	"sserafin"
-);
+# config.php stores the list of users that are permitted to
+# be included in the album. Edit it first.
+include 'config.php';
 
 # add list of users and their real names.
 echo "var users = {\n";
