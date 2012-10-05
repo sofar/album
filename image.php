@@ -1,5 +1,27 @@
 <?
 
+#
+# (C) 2010-2012 - Auke Kok <auke@foo-projects.org>
+#
+
+# This file is part of Album.
+#
+#   Album is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   Album is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with Album.  If not, see <http://www.gnu.org/licenses/>.
+
+# config.php includes the location of our cache folder, as well
+# as some global settings.
+include 'config.php';
 
 if (!function_exists("imagerotate")) {
 	function imagerotate($src_img, $angle) {
@@ -82,8 +104,6 @@ function pass_file_and_exit($file) {
 	exit;
 }
 
-$max_size = 800;
-
 $size = $_GET['s'];
 
 $resample = $_GET['r'];
@@ -105,7 +125,6 @@ if ($size == 0) {
 if ($size > $max_size)
 	$size = $max_size;
 
-$cache_base = "/var/cache/httpd";
 $cache_path = $cache_base . "/" . $album;
 $cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
 

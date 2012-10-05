@@ -1,5 +1,3 @@
 User-agent: *
 Disallow: /
 
-User-agent: *
-Disallow: IS_A_DICK_BOT_VIOLATING_ROBOTS_TXT

@@ -8,4 +8,10 @@ $users = array (
 	"bonnie"
 );
 
+# image size control:
+$max_size = 800;
+
+# where to store our thumbnail cache
+$cache_base = "/var/cache/httpd";
+
 ?>
