@@ -1,4 +1,10 @@
 
-- Replace album-watch with a C-based inotify daemon
 - Proper installation instructions
 - Map out apache/php5 requirements
+
+- Replace album-watch with a C-based inotify daemon
+
+Index caching:
+- Create cache indices for each album based on folder modification dates
+- Cache EXIF date info into album data
+- Generate DB from cached components
