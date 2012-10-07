@@ -37,4 +37,18 @@ Design considerations:
 
 How to install?
 
+ Prerequisites:
+  - A httpd server. Any should do.
+  - PHP 5. Any PHP server version should do, but compat issues are not
+    looked at. The following features should be on in the PHP build:
+     - GD
+     - EXIF
+  - A webserver writable cache folder with plenty of space
+  - Inotify-tools (To detect video uploads and start recoding)
+  - ffmpeg (to recode to MP4)
+  - ffmpeg2theora (to recode to OGV)
+  - ImageMagick (To generate video thumbnails)
 
+Git clone the project and point your browser to the project root folder. Edit
+config.php and enter users. Make sure you change the cache folder location if
+needed.
