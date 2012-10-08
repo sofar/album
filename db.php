@@ -52,7 +52,30 @@ for ($x = 0; $x < count($users); $x++) {
 			$album = readdir($ah);
 			continue;
 		}
-		echo "{ name: '" . $album . "', owner: '" . $users[$x] . "', images: [\n";
+
+		$a = "";
+		$cd = $cache_base . "/" . $album;
+		$ca = $cd . "/" . "db.js";
+
+		# cache intercept
+		if (file_exists($ca)) {
+			if (filemtime($ca) > filemtime($d . "/" . $album)) {
+				$fp = fopen($ca, "r");
+				if ($fp) {
+					$a = fread($fp, filesize($ca));
+					echo $a;
+					fclose($fp);
+				}
+				$album = readdir($ah);
+				continue;
+			} else {
+				# regen cache, discard old cache
+				unlink($ca);
+			}
+		}
+
+		# generate and store cache
+		$a .= "{ name: '" . $album . "', owner: '" . $users[$x] . "', images: [\n";
 
 		$ih = opendir($d . "/" . $album);
 		$image = readdir($ih);
@@ -71,22 +94,38 @@ for ($x = 0; $x < count($users); $x++) {
 				$image = readdir($ih);
 				continue;
 			}
-			echo "{ name: '" . $image . "' }";
+			$a .= "{ name: '" . $image . "' }";
 
 			$image = readdir($ih);
 			if ($image)
-				echo ", ";
+				$a .= ", ";
 			else
-				echo " ";
+				$a .= " ";
 		}
 		closedir($ih);
-		echo " ] }\n";
+		$a .= " ] }\n";
 
 		$album = readdir($ah);
 		if ($album || ($x < count($users) - 1))
-			echo ", ";
+			$a .= ", ";
 		else
-			echo " ";
+			$a .= " ";
+
+		echo $a;
+
+		# write cache entry
+		if (!is_dir($cd)) {
+			mkdir($cd);
+		}
+
+		$fp = fopen($ca, "w");
+		if ($fp) {
+			if (fprintf($fp, "%s", $a) < strlen($a)) {
+				fclose($fp);
+				unlink($ca);
+			}
+			fclose($fp);
+		}
 	}
 	closedir($ah);
 }
