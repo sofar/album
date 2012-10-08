@@ -53,7 +53,10 @@ for ($x = 0; $x < count($users); $x++) {
 			continue;
 		}
 
-		$a = "";
+		unset($a);
+		unset($date);
+		unset($albumdate);
+
 		$cd = $cache_base . "/" . $album;
 		$ca = $cd . "/" . "db.js";
 
@@ -77,6 +80,9 @@ for ($x = 0; $x < count($users); $x++) {
 		# generate and store cache
 		$a .= "{ name: '" . $album . "', owner: '" . $users[$x] . "', images: [\n";
 
+		# assume the album's date is its ctime timestamp.
+		$albumdate = filectime($d . "/" . $album);
+
 		$ih = opendir($d . "/" . $album);
 		$image = readdir($ih);
 		while ($image) {
@@ -94,7 +100,34 @@ for ($x = 0; $x < count($users); $x++) {
 				$image = readdir($ih);
 				continue;
 			}
-			$a .= "{ name: '" . $image . "' }";
+			$a .= "{ name: '" . $image . "'";
+
+			# store original date of the file
+			if (exif_imagetype($d . "/" . $album . "/" . $image) != FALSE) {
+				$exif = exif_read_data($d . "/" . $album . "/" . $image, 0, true);
+				if (isset($exif['IFD0'])) {
+					if (isset($exif['IFD0']['DateTime'])) {
+						$date = strtotime($exif['IFD0']['DateTime']);
+					}
+				}
+			}
+
+			if (!isset($date)) {
+				$date = filectime($d . "/" . $album . "/" . $image);
+			}
+
+			if (isset($date)) {
+				$a .= ", date: " . $date . " ";
+			}
+
+			$a .= "}";
+
+			# date tag the album based on the oldest item
+			if (isset($date)) {
+				if ($date < $albumdate) {
+					$albumdate = $date;
+				}
+			}
 
 			$image = readdir($ih);
 			if ($image)
@@ -103,7 +136,8 @@ for ($x = 0; $x < count($users); $x++) {
 				$a .= " ";
 		}
 		closedir($ih);
-		$a .= " ] }\n";
+
+		$a .= "]" . ", date: " . $albumdate . " " . "}\n";
 
 		$album = readdir($ah);
 		if ($album || ($x < count($users) - 1))
