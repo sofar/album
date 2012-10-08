@@ -679,14 +679,14 @@ for (x = 0; x < albums.length; x++) {
 
 // and now sort the indices.
 albums.sort(function(a, b) {
-	return ((a.name < b.name) ? 1 : -1);
+	return ((a.date < b.date) ? 1 : -1);
 });
 
 for (x = 0; x < albums.length; x++) {
 	if (!albums[x].images)
 		continue;
 	albums[x].images.sort(function(a, b) {
-		return ((a.name > b.name) ? 1 : -1);
+		return ((a.date > b.date) ? 1 : -1);
 	});
 }
 

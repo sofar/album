@@ -80,8 +80,8 @@ for ($x = 0; $x < count($users); $x++) {
 		# generate and store cache
 		$a .= "{ name: '" . $album . "', owner: '" . $users[$x] . "', images: [\n";
 
-		# assume the album's date is its ctime timestamp.
-		$albumdate = filectime($d . "/" . $album);
+		# assume the album's date is its mtime timestamp.
+		$albumdate = filemtime($d . "/" . $album);
 
 		$ih = opendir($d . "/" . $album);
 		$image = readdir($ih);
@@ -113,7 +113,7 @@ for ($x = 0; $x < count($users); $x++) {
 			}
 
 			if (!isset($date)) {
-				$date = filectime($d . "/" . $album . "/" . $image);
+				$date = filemtime($d . "/" . $album . "/" . $image);
 			}
 
 			if (isset($date)) {
