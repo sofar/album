@@ -76,8 +76,8 @@ if (!function_exists("imagerotate")) {
 }
 
 function pass_file_and_exit($file) {
-	preg_match("'^(.*)\.(gif|jpe?g|png|thm|ogv|mp4)$'i", $file, $e);
-	switch (strtolower($e[2])) {
+	$i = pathinfo($file);
+	switch (strtolower($i['extension'])) {
 	case 'jpg':
 	case 'jpeg':
 	case 'thm':
@@ -134,7 +134,8 @@ if (!is_dir($cache_path))
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($obj)).' GMT', true, 200);
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (80640 * 180)) . ' GMT', true, 200);
 
-preg_match("'^(.*)\.(gif|jpe?g|png|thm)$'i", $image, $ext);
+$i = pathinfo($image);
+$ext = strtolower($i['extension']);
 
 # fetch the (already rotated) cached file if present
 if (file_exists($cache_file))
@@ -151,7 +152,7 @@ if (is_array($exif)) {
 	}
 }
 
-switch (strtolower($ext[2])) {
+switch ($ext) {
 case 'jpg':
 case 'jpeg':
 case 'thm':
@@ -204,7 +205,7 @@ case 8:
 	break;
 }
 
-switch (strtolower($ext[2])) {
+switch ($ext) {
 case 'thm' :
 	imagejpeg($save);
 	break;
