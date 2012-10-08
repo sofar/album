@@ -90,16 +90,21 @@ for ($x = 0; $x < count($users); $x++) {
 				$image = readdir($ih);
 				continue;
 			}
-			if ((!is_file($d . "/" . $album . "/" . $image)) ||
-			    (preg_match('/[.]avi$/', $image)) ||
-			    (preg_match('/[.]AVI$/', $image)) ||
-			    (preg_match('/[.]thm$/', $image)) ||
-			    (preg_match('/[.]THM$/', $image)) ||
-			    (preg_match('/[.]nef$/', $image)) ||
-			    (preg_match('/[.]NEF$/', $image))) {
+			if (!is_file($d . "/" . $album . "/" . $image)) {
 				$image = readdir($ih);
 				continue;
 			}
+
+			# ignore a few filetypes.
+			$pi = pathinfo($image);
+			switch(strtolower($pi['extension'])) {
+			case 'avi':
+			case 'thm':
+			case 'nef':
+				$image = readdir($ih);
+				continue;
+			}
+
 			$a .= "{ name: '" . $image . "'";
 
 			# store original date of the file
