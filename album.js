@@ -205,15 +205,25 @@ function object(a, i) {
 	var r = "";
 	var o = albums[a].images[i].name;
 
-	if (o.match(".mp4") || o.match(".MP4")) {
+	if (o.match(".mp4") || o.match(".MP4") ||
+	    o.match(".ogv") || o.match(".OGV") ||
+	    o.match(".mpg") || o.match(".MPG") ||
+	    o.match(".mpeg") || o.match(".MPEG") ||
+	    o.match(".avi") || o.match(".AVI")) {
+		if (!albums[a].images[i].alts)
+			return "<p>Unsupported file format</p>\n";
 		// Video display
 		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls><source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + o + "\" type=\"video/mp4\">Video not playing? Click the link above to download the file and play locally.</video>";
-		r += "</div>\n";
-	} else if ( o.match(".ogv") || o.match(".OGV")) {
-		// Video display
-		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls><source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + o + "\" type=\"video/ogg\">Video not playing? Click the link above to download the file and play locally.</video>";
+		r += "<video controls>";
+		for (z = 0; z < albums[a].images[i].alts.length; z++) {
+			alt = albums[a].images[i].alts[z];
+			if ((alt.match(".mp4") && (supports_mpeg4 || supports_h264)))
+				r += "<source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + alt + "\" type=\"video/mp4\" />";
+			if ((alt.match(".ogv") && supports_ogg))
+				r += "<source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + alt + "\" type=\"video/ogg\" />";
+		}
+		r += "Video not playing? Click the link above to download the file and play locally.";
+		r += "</video controls>";
 		r += "</div>\n";
 	} else {
 		// image display
