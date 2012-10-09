@@ -37,7 +37,7 @@ function do_file($path, $album, $user)
 	if (!is_file($t)) {
 		echo 'ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in"' . "\n";
 		system('ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in" > /dev/null 2>&1');
-		echo 'convert "jpg:' . $t . '.in" -resize 100x100 "jpg:' . $t . '"';
+		echo 'convert "jpg:' . $t . '.in" -resize 100x100 "jpg:' . $t . '"' . "\n";
 		system('convert "jpg:' . $t . '.in" -resize 100x100 "jpg:' . $t . '"');
 		unlink($t . '.in');
 	}
