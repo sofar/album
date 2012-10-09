@@ -97,13 +97,15 @@ for ($x = 0; $x < count($users); $x++) {
 
 			# ignore a few filetypes.
 			$pi = pathinfo($image);
-			switch(strtolower($pi['extension'])) {
-			case 'avi':
+			switch (strtolower($pi['extension'])) {
 			case 'thm':
 			case 'nef':
 				$image = readdir($ih);
 				continue;
 			}
+
+			# now we just include the original video, let the .js code
+			# handle getting the recoded video versions.
 
 			$a .= "{ name: '" . $image . "'";
 
