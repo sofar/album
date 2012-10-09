@@ -104,9 +104,6 @@ for ($x = 0; $x < count($users); $x++) {
 				continue;
 			}
 
-			# now we just include the original video, let the .js code
-			# handle getting the recoded video versions.
-
 			$a .= "{ name: '" . $image . "'";
 
 			# store original date of the file
@@ -125,6 +122,27 @@ for ($x = 0; $x < count($users); $x++) {
 
 			if (isset($date)) {
 				$a .= ", date: " . $date . " ";
+			}
+
+			# for video types, include web-playable versions
+			switch (strtolower($pi['extension'])) {
+			case 'avi':
+			case 'mpg':
+				$a .= ', alts: [ "' .
+				      $pi['filename'] . '.mp4", ' .
+				      $pi['filename'] . '.ogv" ' .
+				      '] ';
+				      break;
+			case 'mp4':
+				$a .= ', alts: [ "' .
+				      $pi['filename'] . '.ogv" ' .
+				      '] ';
+				      break;
+			case 'ogv':
+				$a .= ', alts: [ "' .
+				      $pi['filename'] . '.mp4" ' .
+				      '] ';
+				      break;
 			}
 
 			$a .= "}";
