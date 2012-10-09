@@ -86,26 +86,38 @@ function preload(a, i, size) {
 	preloads[preloads.length - 1].src = imgurl(a, i, size);
 }
 
-function format_is_supported(name) {
+function format_is_supported(a, i) {
+	name = albums[a].images[i].name;
 	// Test compatibility for these per browser
-	if (name.match(".ogv"))
-		return supports_ogg;
-	if (name.match(".OGV"))
-		return supports_ogg;
-	if (name.match(".mp4"))
-		return (supports_mpeg4 || supports_h264);
-	if (name.match(".MP4"))
-		return (supports_mpeg4 || supports_h264);
+	if ((name.match(".ogv")) && supports_ogg)
+		return true;
+	if ((name.match(".OGV")) && supports_ogg)
+		return true;
+	if ((name.match(".mp4")) && (supports_mpeg4 || supports_h264))
+		return true;
+	if ((name.match(".MP4")) && (supports_mpeg4 || supports_h264))
+		return true;
 
-	// Always hide these files:
-	if (name.match(".mpg"))
+	// try and support all non-altable formats
+	if (!albums[a].images[i].alts)
+		return true;
+
+	// Check for supported alts:
+	if ((name.match(".mpg")) ||
+	    (name.match(".MPG")) ||
+	    (name.match(".mpeg")) ||
+	    (name.match(".MPEG")) ||
+	    (name.match(".avi")) ||
+	    (name.match(".AVI"))) {
+		for (z = 0; z < albums[a].images[i].alts.length; z++) {
+			alt = albums[a].images[i].alts[z];
+			if ((alt.match(".ogv")) && supports_ogg)
+				return true;
+			if ((alt.match(".mp4")) && (supports_mpeg4 || supports_h264))
+				return true;
+		}
 		return false;
-	if (name.match(".MPG"))
-		return false;
-	if (name.match(".avi"))
-		return false;
-	if (name.match(".AVI"))
-		return false;
+	}
 
 	// The rest is always supported
 	return true;
@@ -672,7 +684,7 @@ for (x = 0; x < albums.length; x++) {
 	for (y = albums[x].images.length - 1; y >= 0; y--) {
 		if (!albums[x].images[y])
 			continue;
-		if (!format_is_supported(albums[x].images[y].name))
+		if (!format_is_supported(x, y))
 			albums[x].images.splice(y, 1);
 	}
 }

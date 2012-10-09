@@ -125,29 +125,33 @@ if ($size == 0) {
 if ($size > $max_size)
 	$size = $max_size;
 
+#header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($obj)).' GMT', true, 200);
+header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (80640 * 180)) . ' GMT', true, 200);
+
 $cache_path = $cache_base . "/" . $album;
-$cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
 
 if (!is_dir($cache_path))
 	mkdir($cache_path);
 
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($obj)).' GMT', true, 200);
-header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (80640 * 180)) . ' GMT', true, 200);
+# fetch the (already rotated) cached file if present
+$cache_file = $cache_path . "/" . basename($image);
+if (file_exists($cache_file))
+	pass_file_and_exit($cache_file);
+$cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
+if (file_exists($cache_file))
+	pass_file_and_exit($cache_file);
 
 $i = pathinfo($image);
 $ext = strtolower($i['extension']);
 
-# fetch the (already rotated) cached file if present
-if (file_exists($cache_file))
-	pass_file_and_exit($cache_file);
-
-
-$exif = exif_read_data($obj, 0, true);
 $o = 0;
-if (is_array($exif)) {
-	if (array_key_exists('IFD0', $exif)) {
-		if (array_key_exists('Orientation', $exif['IFD0'])) {
-			$o = $exif['IFD0']['Orientation'];
+if (exif_imagetype($obj) != false) {
+	$exif = exif_read_data($obj, 0, true);
+	if (is_array($exif)) {
+		if (array_key_exists('IFD0', $exif)) {
+			if (array_key_exists('Orientation', $exif['IFD0'])) {
+				$o = $exif['IFD0']['Orientation'];
+			}
 		}
 	}
 }
