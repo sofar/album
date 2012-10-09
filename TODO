@@ -1,6 +1,5 @@
 
-- Proper installation instructions
+- Refine installation instructions a bit with examples and cmdlines
 - Map out apache/php5 requirements
-
-- Replace album-watch with a C-based inotify daemon
+- replace convert with internal GD functions so we can drop a dependency
 

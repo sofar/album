@@ -4,7 +4,10 @@ Description=Album helper - process video files on demand
 After=network.target
 
 [Service]
-ExecStart=/var/www/htdocs/album-watch
+WorkingDirectory=/var/www/htdocs
+ExecStart=/usr/bin/php album-watch.php
+User=httpd
+Group=httpd
 Restart=always
 RestartSec=1
 Nice=19
