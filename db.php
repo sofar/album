@@ -129,7 +129,7 @@ for ($x = 0; $x < count($users); $x++) {
 			case 'avi':
 			case 'mpg':
 				$a .= ', alts: [ "' .
-				      $pi['filename'] . '.mp4", ' .
+				      $pi['filename'] . '.mp4", "' .
 				      $pi['filename'] . '.ogv" ' .
 				      '] ';
 				      break;
