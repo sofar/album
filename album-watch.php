@@ -26,8 +26,6 @@ function do_file($path, $album, $user)
 		return;
 	}
 
-	echo 'Processing "' . $path . '"' . "\n";
-
 	# might need to mkdir first
 	if (!is_dir($cache_base . "/" . $album))
 		mkdir($cache_base . "/" . $album);
