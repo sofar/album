@@ -35,8 +35,28 @@ function do_file($path, $album, $user)
 	if (!is_file($t)) {
 		echo 'ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in"' . "\n";
 		system('ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in" > /dev/null 2>&1');
-		echo 'convert "jpg:' . $t . '.in" -resize 100x100 "jpg:' . $t . '"' . "\n";
-		system('convert "jpg:' . $t . '.in" -resize 100x100 "jpg:' . $t . '"');
+
+		$size = 100;
+
+		$im  = imagecreatefromjpeg($t . '.in');
+		list($width_orig, $height_orig) = getimagesize($t . '.in');
+
+		$ratio_orig = $width_orig / $height_orig;
+
+		if ($ratio_orig > 1) {
+			$width = $size;
+			$height = $size / $ratio_orig;
+		} else {
+			$width = $size * $ratio_orig;
+			$height = $size;
+		}
+
+		$save = imagecreatetruecolor($width, $height);
+
+		imagecopyresampled($save, $im, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+
+		imagejpeg($save, $t);
+
 		unlink($t . '.in');
 	}
 
