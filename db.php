@@ -128,19 +128,12 @@ for ($x = 0; $x < count($users); $x++) {
 			switch (strtolower($pi['extension'])) {
 			case 'avi':
 			case 'mpg':
+			case 'mpeg':
+			case 'mp4':
+			case 'ogv':
 				$a .= ', alts: [ "' .
 				      $pi['filename'] . '.mp4", "' .
 				      $pi['filename'] . '.ogv" ' .
-				      '] ';
-				      break;
-			case 'mp4':
-				$a .= ', alts: [ "' .
-				      $pi['filename'] . '.ogv" ' .
-				      '] ';
-				      break;
-			case 'ogv':
-				$a .= ', alts: [ "' .
-				      $pi['filename'] . '.mp4" ' .
 				      '] ';
 				      break;
 			}
