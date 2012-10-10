@@ -63,6 +63,8 @@ function do_file($path, $album, $user)
 	# mp4
 	$t = $cache_base . "/" . $album . "/" . $i['filename'] . ".mp4";
 	if (!is_file($t)) {
+		# most of my stuff is in AVI or MP4 format, and doesn't need any tuning to come out OK
+		# with mp4 format recoding
 		echo 'ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '"' . "\n";
 		system('ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '" > /dev/null 2>&1');
 	}
@@ -70,8 +72,10 @@ function do_file($path, $album, $user)
 	# ogv
 	$t = $cache_base . "/" . $album . "/" . $i['filename'] . ".ogv";
 	if (!is_file($t)) {
-		echo 'ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora "' . $t . '"' . "\n";
-		system('ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora "' . $t . '" > /dev/null 2>&1');
+		# with -sameq or no params, OGV's come out very pixelated and small. Instead
+		# code these at -qscale 6, which is small but plenty res for the web.
+		echo 'ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora -qscale 6 "' . $t . '"' . "\n";
+		system('ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora -qscale 6 "' . $t . '" > /dev/null 2>&1');
 	}
 }
 
