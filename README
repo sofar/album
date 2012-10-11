@@ -39,14 +39,19 @@ How to install?
 
  Prerequisites:
   - A httpd server. Any should do.
-  - PHP 5. Any PHP server version should do, but compat issues are not
+  - PHP 5
+    Any PHP server version should do, but compat issues are not
     looked at. The following features should be on in the PHP build:
      - GD
      - EXIF
-  - pecl inotify (`pecl install inotify`)
+  - pecl inotify
+    `pecl install inotify` to install this automatically
   - A webserver writable cache folder with plenty of space
-  - ffmpeg (to recode to MP4 and OGV)
-  - ImageMagick (To generate video thumbnails)
+  - ffmpeg with codecs as needed:
+     - libvorbis
+     - libtheora
+     - libx264
+     - faac
 
 Git clone the project and point your browser to the project root folder. Edit
 config.php and enter users. Make sure you change the cache folder location if
