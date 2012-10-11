@@ -5,3 +5,6 @@
 
 - check input size against allowed list
 
+- use ffmpeg to get "Date Created" from video files in bg daemon. Somehow
+  make this date end up in db.js.
+
