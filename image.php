@@ -118,7 +118,7 @@ if (array_search($user, $users) === FALSE)
 
 $album = dirname($image);
 
-$pw = posix_getpwnam($users[$x]);
+$pw = posix_getpwnam($user);
 $home = $pw['dir'];
 
 # passtrhru unsized?
