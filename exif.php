@@ -25,6 +25,8 @@
 # Get exif info for an image, and render a XML content that can be inserted
 # into a webpage dynamically
 
+include 'config.php';
+
 $fields = array (
 	"FILE.FileName" => "Filename",
 	"EXIF.ExifImageWidth" => "Width",
@@ -46,11 +48,16 @@ $output = array ();
 $image = $_GET['i'];
 $user = $_GET['u'];
 
+if (array_search($user, $users) === FALSE)
+	die("-EINVAL\n");
+
 $album = dirname($image);
 
-$obj = "/home/" . $user . "/album/" . $image;
-
 $pw = posix_getpwnam($user);
+$home = $pw['dir'];
+
+$obj = $home . "/album/" . $image;
+
 echo "Path: " . $image . "\n";
 echo "Owner: " . $pw['gecos'] . "\n\n";
 

@@ -41,7 +41,9 @@ echo "};\n\n";
 echo "var albums = [\n";
 
 for ($x = 0; $x < count($users); $x++) {
-	$d = "/home/" . $users[$x] . "/album";
+	$pw = posix_getpwnam($users[$x]);
+	$home = $pw['dir'];
+	$d = $home . "/album";
 	if (!is_dir($d))
 		continue;
 	$ah = opendir($d);
