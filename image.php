@@ -113,6 +113,9 @@ $image = $_GET['i'];
 if (isset($_GET['u']))
 	$user = $_GET['u'];
 
+if (array_search($user, $users) === FALSE)
+	die("-EINVAL\n");
+
 $album = dirname($image);
 
 # passtrhru unsized?
