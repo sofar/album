@@ -134,7 +134,7 @@ if ($size > $max_size)
 #header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($obj)).' GMT', true, 200);
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (80640 * 180)) . ' GMT', true, 200);
 
-$cache_path = $cache_base . "/" . $album;
+$cache_path = $cache_base . "/" . $user . "/" . $album;
 
 if (!is_dir($cache_path))
 	mkdir($cache_path);

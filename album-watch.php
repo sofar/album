@@ -27,11 +27,13 @@ function do_file($path, $album, $user)
 	}
 
 	# might need to mkdir first
-	if (!is_dir($cache_base . "/" . $album))
-		mkdir($cache_base . "/" . $album);
+	if (!is_dir($cache_base . "/" . $user))
+		mkdir($cache_base . "/" . $user);
+	if (!is_dir($cache_base . "/" . $user . "/" . $album))
+		mkdir($cache_base . "/" . $user . "/" . $album);
 
 	# thumbnail
-	$t = $cache_base . "/" . $album . "/" . $i['filename'] . ".thm";
+	$t = $cache_base . "/" . $user . "/" . $album . "/" . $i['filename'] . ".thm";
 	if (!is_file($t)) {
 		echo 'ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in"' . "\n";
 		system('ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in" > /dev/null 2>&1');
@@ -61,7 +63,7 @@ function do_file($path, $album, $user)
 	}
 
 	# mp4
-	$t = $cache_base . "/" . $album . "/" . $i['filename'] . ".mp4";
+	$t = $cache_base . "/" . $user . "/" . $album . "/" . $i['filename'] . ".mp4";
 	if (!is_file($t)) {
 		# most of my stuff is in AVI or MP4 format, and doesn't need any tuning to come out OK
 		# with mp4 format recoding
@@ -70,7 +72,7 @@ function do_file($path, $album, $user)
 	}
 
 	# ogv
-	$t = $cache_base . "/" . $album . "/" . $i['filename'] . ".ogv";
+	$t = $cache_base . "/" . $user . "/" . $album . "/" . $i['filename'] . ".ogv";
 	if (!is_file($t)) {
 		# with -sameq or no params, OGV's come out very pixelated and small. Instead
 		# code these at -qscale 6, which is small but plenty res for the web.
@@ -134,8 +136,6 @@ for ($x = 0; $x < count($users); $x++) {
 			$album = readdir($ah);
 			continue;
 		}
-
-		$cd = $cache_base . "/" . $album;
 
 		$ih = opendir($d . "/" . $album);
 		$image = readdir($ih);

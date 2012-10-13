@@ -1,8 +1,6 @@
 
 - Refine installation instructions a bit with examples and cmdlines
 
-- make a cache folder per user: $cache_base/$user/$album/$object
-
 - check input size against allowed list
 
 - use ffmpeg to get "Date Created" from video files in bg daemon. Somehow

@@ -59,7 +59,7 @@ for ($x = 0; $x < count($users); $x++) {
 		unset($date);
 		unset($albumdate);
 
-		$cd = $cache_base . "/" . $album;
+		$cd = $cache_base . "/" . $users[$x] . "/" . $album;
 		$ca = $cd . "/" . "db.js";
 
 		# cache intercept
@@ -168,9 +168,10 @@ for ($x = 0; $x < count($users); $x++) {
 		echo $a;
 
 		# write cache entry
-		if (!is_dir($cd)) {
+		if (!is_dir($cache_base . "/" . $users[$x]))
+			mkdir($cache_base . "/" . $users[$x]);
+		if (!is_dir($cd))
 			mkdir($cd);
-		}
 
 		$fp = fopen($ca, "w");
 		if ($fp) {
