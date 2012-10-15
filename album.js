@@ -472,6 +472,7 @@ function do_help() {
 	c += "PgDn       Go to the next page\n";
 	c += "Right      Go to the next page or photo\n";
 	c += "n          Go to the next page or photo\n";
+	c += "]          Go to the next album\n";
 	c += "Space      Go to the next page or photo\n";
 	c += "Down       Go back into the album or image\n\n";
 
@@ -479,6 +480,7 @@ function do_help() {
 	c += "PgUp       Go to the previous page\n";
 	c += "Left       Go to the previous page or photo\n";
 	c += "p          Go to the previous page or photo\n";
+	c += "[          Go to the previous album\n";
 	c += "Backspace  Go to the previous page or photo\n";
 	c += "Up         Go back to the album or index\n\n";
 
@@ -657,6 +659,14 @@ function keypressed(e) {
 		break;
 	case 72: // h
 		do_help();
+		break;
+	case 219: // [
+		if ((last != "index") && (last_album > 0))
+			select(--last_album, last_image);
+		break;
+	case 221: // ]
+		if ((last != "index") && (last_album < albums.length - 1))
+			select(++last_album, last_image);
 		break;
 	default:
 		// alert(k);
