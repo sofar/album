@@ -83,6 +83,8 @@ function imgurl(a, i, size) {
 }
 
 function preload(a, i, size) {
+	if (preloads.length > 100)
+		preloads.splice(0, 50);
 	preloads[preloads.length] = new Image();
 	preloads[preloads.length - 1].src = imgurl(a, i, size);
 }
