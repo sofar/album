@@ -25,6 +25,7 @@ var last_index_section = 0;
 var last_album_section = 0;
 var fullscreen = false;
 var slideshow = false;
+var slideshowrandom = false;
 var slideshowinterval;
 var slideshowspeed = 5;
 var help = false;
@@ -394,12 +395,18 @@ function select(a, i) {
 }
 
 function run_slideshow() {
-	var x = last_album;
-	var y = last_image;
-	if (y < albums[x].images.length - 1)
-		select(x, y+1);
-	else
-		select(x, 0);
+	if (slideshowrandom) {
+		var x = Math.floor(Math.random() * albums.length);
+		var y = Math.floor(Math.random() * albums[x].images.length);
+		select(x, y);
+	} else {
+		var x = last_album;
+		var y = last_image;
+		if (y < albums[x].images.length - 1)
+			select(x, y+1);
+		else
+			select(x, 0);
+	}
 }
 
 function repaint() {
@@ -424,7 +431,8 @@ function load_settings() {
 	}
 }
 
-function do_slideshow() {
+function do_slideshow(random) {
+	slideshowrandom = random;
 	if (slideshow) {
 		slideshow = false;
 		window.clearInterval(slideshowinterval);
@@ -484,7 +492,7 @@ function do_help() {
 	c += "Backspace  Go to the previous page or photo\n";
 	c += "Up         Go back to the album or index\n\n";
 
-	c += "s          Start or stop the <u><a title=\"slideshow\" href=\"#\" onclick=\"do_slideshow();\">slideshow</a></u>\n";
+	c += "s          Start or stop the <u><a title=\"slideshow\" href=\"#\" onclick=\"do_slideshow(false);\">slideshow</a></u>\n";
 	c += "f          Toggle <u><a title=\"fullscreen\" href=\"#\" onclick=\"do_fullscreen();\">fullscreen</a></u> display\n";
 	c += "h          Show or leave this help screen\n\n";
 
@@ -651,8 +659,11 @@ function keypressed(e) {
 			select(last_album, last_image);
 		}
 		break;
+	case 82: // r
+		do_slideshow(true);
+		break;
 	case 83: // s
-		do_slideshow();
+		do_slideshow(false);
 		break;
 	case 70: // f
 		do_fullscreen();
