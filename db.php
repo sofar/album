@@ -98,10 +98,10 @@ for ($x = 0; $x < count($users); $x++) {
 			}
 
 			# ignore a few filetypes.
-			$pi = pathinfo($image);
-			switch (strtolower($pi['extension'])) {
-			case 'thm':
-			case 'nef':
+			$pi = pathinfo($d . "/" . $album . "/" . $image);
+			$pie = strtolower($pi['extension']);
+			# can't use switch here since "continue" doesn't behave normally in a switch statement
+			if (($pie == 'thm') || ($pie == 'nef')) {
 				$image = readdir($ih);
 				continue;
 			}
