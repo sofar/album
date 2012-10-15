@@ -81,7 +81,7 @@ function pass_file_and_exit($file) {
 	case 'jpg':
 	case 'jpeg':
 	case 'thm':
-		header("Content-type: image/jpeg");
+		header("Content-type: image/jpg");
 		break;
 	case 'gif':
 		header("Content-type: image/gif");
@@ -100,6 +100,7 @@ function pass_file_and_exit($file) {
 		break;
 	}
 	header("Content-length: ".filesize($file));
+	header('Content-Disposition: attachment; filename="' . $i['basename'] . '"');
 	readfile($file);
 	exit;
 }
