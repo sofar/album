@@ -149,7 +149,7 @@ for ($x = 0; $x < count($users); $x++) {
 				continue;
 			}
 
-			do_file($d . "/" . $album . "/" . $image, $album, $users[x]);
+			do_file($d . "/" . $album . "/" . $image, $album, $users[$x]);
 
 			$image = readdir($ih);
 		}
