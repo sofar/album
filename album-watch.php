@@ -166,15 +166,15 @@ for ($x = 0; $x < count($users); $x++) {
 while(TRUE) {
 	$events = inotify_read($i);
 	foreach($events as $event) {
-		$p = $w[$event[wd]] . "/" . $event['name'];
+		$p = $w[$event[$wd]] . "/" . $event['name'];
 		if (is_dir($p)) {
 			# new folder - add to the watch list
 			$wd = inotify_add_watch($i, $p, IN_CLOSE_WRITE);
 			$w[$wd] = $p;
-			$u[$wd] = $u[$event[wd]];
-			$a[$wd] = $a[$event[wd]];
+			$u[$wd] = $u[$event[$wd]];
+			$a[$wd] = $a[$event[$wd]];
 		} else {
-			do_file($p, $a[$event[wd]], $u[$event[wd]]);
+			do_file($p, $a[$event[$wd]], $u[$event[$wd]]);
 		}
 	}
 }

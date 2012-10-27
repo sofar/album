@@ -117,13 +117,19 @@ if (isset($_GET['u']))
 if (array_search($user, $users) === FALSE)
 	die("-EINVAL\n");
 
+$i = pathinfo($image);
+$ext = strtolower($i['extension']);
+
 $album = dirname($image);
 
 $pw = posix_getpwnam($user);
 $home = $pw['dir'];
 
 # passtrhru unsized?
-$obj = $home . "/album/" . $image;
+if ($ext == 'thm')
+	$obj = $cache_base . "/" . $user . "/" . $image;
+else
+	$obj = $home . "/album/" . $image;
 if ($size == 0) {
 	if (file_exists($obj))
 		pass_file_and_exit($obj);
@@ -147,9 +153,6 @@ if (file_exists($cache_file))
 $cache_file = $cache_path . "/" . "x" . $size . "-" . basename($image);
 if (file_exists($cache_file))
 	pass_file_and_exit($cache_file);
-
-$i = pathinfo($image);
-$ext = strtolower($i['extension']);
 
 $o = 0;
 if (exif_imagetype($obj) != false) {
