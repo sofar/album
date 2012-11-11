@@ -72,6 +72,8 @@ for ($x = 0; $x < count($users); $x++) {
 					fclose($fp);
 				}
 				$album = readdir($ah);
+				if ($album || ($x < count($users) - 1))
+					echo ", ";
 				continue;
 			} else {
 				# regen cache, discard old cache
@@ -159,15 +161,7 @@ for ($x = 0; $x < count($users); $x++) {
 
 		$a .= "]" . ", date: " . $albumdate . " " . "}\n";
 
-		$album = readdir($ah);
-		if ($album || ($x < count($users) - 1))
-			$a .= ", ";
-		else
-			$a .= " ";
-
-		echo $a;
-
-		# write cache entry
+		# write cache entry BEFORE appending ","
 		if (!is_dir($cache_base . "/" . $users[$x]))
 			mkdir($cache_base . "/" . $users[$x]);
 		if (!is_dir($cd))
@@ -181,6 +175,15 @@ for ($x = 0; $x < count($users); $x++) {
 			}
 			fclose($fp);
 		}
+
+		$album = readdir($ah);
+		if ($album || ($x < count($users) - 1))
+			$a .= ", ";
+		else
+			$a .= " ";
+
+		echo $a;
+
 	}
 	closedir($ah);
 }
