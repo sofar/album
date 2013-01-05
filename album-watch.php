@@ -36,7 +36,11 @@ function do_file($path, $album, $user)
 	$t = $cache_base . "/" . $user . "/" . $album . "/" . $i['filename'] . ".thm";
 	if (!is_file($t)) {
 		echo 'ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in"' . "\n";
-		system('ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in" > /dev/null 2>&1');
+		system('ffmpeg -i "' . $path . '" -ss 0 -vframes 1 -f mjpeg -an "' . $t . '.in" > /dev/null 2>&1', $ret);
+
+		if ($ret != 0) {
+			echo "ERROR: ffmpeg returned " . $ret . "\n";
+		}
 
 		$size = 100;
 
@@ -68,7 +72,11 @@ function do_file($path, $album, $user)
 		# most of my stuff is in AVI or MP4 format, and doesn't need any tuning to come out OK
 		# with mp4 format recoding
 		echo 'ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '"' . "\n";
-		system('ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '" > /dev/null 2>&1');
+		system('ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '" > /dev/null 2>&1', $ret);
+
+		if ($ret != 0) {
+			echo "ERROR: ffmpeg returned " . $ret . "\n";
+		}
 	}
 
 	# ogv
@@ -77,7 +85,11 @@ function do_file($path, $album, $user)
 		# with -sameq or no params, OGV's come out very pixelated and small. Instead
 		# code these at -qscale 6, which is small but plenty res for the web.
 		echo 'ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora -qscale 6 "' . $t . '"' . "\n";
-		system('ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora -qscale 6 "' . $t . '" > /dev/null 2>&1');
+		system('ffmpeg -i "' . $path . '" -acodec libvorbis -ac 2 -vcodec libtheora -qscale 6 "' . $t . '" > /dev/null 2>&1', $ret);
+
+		if ($ret != 0) {
+			echo "ERROR: ffmpeg returned " . $ret . "\n";
+		}
 	}
 }
 
