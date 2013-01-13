@@ -72,7 +72,7 @@ function do_file($path, $album, $user)
 		# most of my stuff is in AVI or MP4 format, and doesn't need any tuning to come out OK
 		# with mp4 format recoding
 		echo 'ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '"' . "\n";
-		system('ffmpeg -i "' . $path . '" -acodec libfaac -vcodec libx264 "' . $t . '" > /dev/null 2>&1', $ret);
+		system('ffmpeg -i "' . $path . '" -acodec libfaac -ac 2 -ar 44100 -vcodec libx264 "' . $t . '" > /dev/null 2>&1', $ret);
 
 		if ($ret != 0) {
 			echo "ERROR: ffmpeg returned " . $ret . "\n";
@@ -183,10 +183,10 @@ while(TRUE) {
 			# new folder - add to the watch list
 			$wd = inotify_add_watch($i, $p, IN_CLOSE_WRITE);
 			$w[$wd] = $p;
-			$u[$wd] = $u[$event[$wd]];
-			$a[$wd] = $a[$event[$wd]];
+			$u[$wd] = $u[$event['wd']];
+			$a[$wd] = $a[$event['wd']];
 		} else {
-			do_file($p, $a[$event[$wd]], $u[$event[$wd]]);
+			do_file($p, $a[$event['wd']], $u[$event['wd']]);
 		}
 	}
 }

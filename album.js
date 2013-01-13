@@ -217,7 +217,7 @@ function object(a, i) {
 			return "<p>Unsupported file format</p>\n";
 		// Video display
 		r += "<div style=\"display: inline-block;\">";
-		r += "<video controls>";
+		r += "<video controls=\"controls\">";
 		for (z = 0; z < albums[a].images[i].alts.length; z++) {
 			alt = albums[a].images[i].alts[z];
 			if ((alt.match(".mp4") && (supports_mpeg4 || supports_h264)))
