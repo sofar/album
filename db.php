@@ -118,6 +118,11 @@ for ($x = 0; $x < count($users); $x++) {
 						$date = strtotime($exif['IFD0']['DateTime']);
 					}
 				}
+				if (isset($exif['EXIF'])) {
+					if (isset($exif['EXIF']['DateTimeOriginal'])) {
+						$date = strtotime($exif['EXIF']['DateTimeOriginal']);
+					}
+				}
 			}
 
 			if (!isset($date)) {
