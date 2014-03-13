@@ -235,10 +235,10 @@ function object(a, i) {
 		if (!fullscreen) {
 			r += "<div style=\"display: inline-block; float: left; height: 840px; width: 840px; line-height: 120px;\">";
 			r += "<map name=\"map-" + o + "\">\n";
-			if (i > 0)
-				r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(" + a + ", " + (i-1) + ")\" />\n";
-			if (i < albums[a].images.length - 1)
-				r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(" + a + ", " + (i+1) + ")\" />\n";
+			if ((stream_mode && (albums[a].images[i].s > 0)) || (i > 0))
+				r += "<area shape=\"rect\" coords=\"0,0,250,800\" href=\"javascript: select(" + a + ", " + (stream_mode ? albums[a].images[i].s-1 : i-1) + ")\" />\n";
+			if ((stream_mode && (albums[a].images[i].s < (stream.length - 1))) || (i < albums[a].images.length - 1))
+				r += "<area shape=\"rect\" coords=\"400,0,800,800\" href=\"javascript: select(" + a + ", " + (stream_mode ? albums[a].images[i].s+1 : i+1) + ")\" />\n";
 			r += "</map>\n";
 
 			r += "<img class=\"selected\" alt=\"" + o + "\" usemap=\"#map-" + o + "\" title=\'" + o + "\' src=\"" + imgurl(a, i, 800) + "\" onmouseover=\"loadexif(this, " + a + ", " + i + ")\"/>\n";
@@ -268,12 +268,14 @@ function select(a, i) {
 		si = stream[i].i;
 		c += object(sa,si);
 
-		if (i < stream.length -1)
+		if (i < stream.length - 1)
 			c += block("<a href=\"javascript:select(-1, " + (i + 1) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
 
 		c += "<div style=\"clear: both;\"></div>\n";
 
 		document.getElementById('content').innerHTML = c;
+
+		last_image = i;
 
 		return true;
 	}
@@ -638,7 +640,9 @@ function keypressed(e) {
 	case 78: // n
 	case 32: // space
 	case 39: // right
-		if (last == "image") {
+		if (stream_mode) {
+			select(-1, last_image + 1);
+		} else if (last == "image") {
 			if (last_image < albums[last_album].images.length - 1)
 				select(last_album, last_image+1);
 		} else if (last == "album") {
@@ -656,7 +660,9 @@ function keypressed(e) {
 	case 80: // p
 	case 8:  // backspace
 	case 37: // left
-		if (last == "image") {
+		if (stream_mode) {
+			select(-1, last_image - 1);
+		} else if (last == "image") {
 			if (last_image > 0)
 				select(last_album, last_image - 1);
 		} else if (last == "album") {
@@ -798,6 +804,17 @@ stream.sort(function(a, b) {
 		return 0;
 	return ((a.date < b.date) ? 1 : -1);
 });
+
+// crosslink indices
+for (x = 0; x < albums.length; x++) {
+	if (!albums[x].images)
+		continue;
+	for (y = albums[x].images.length - 1; y >= 0; y--) {
+		if (!albums[x].images[y])
+			continue;
+		albums[x].images[y].s = stream.length - 1;
+	}
+}
 
 function init() {
 	load_settings();
