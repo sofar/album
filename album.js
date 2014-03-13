@@ -34,6 +34,8 @@ var supports_mpeg4 = false;
 var supports_h264 = false;
 var supports_ogg = false;
 var supports_webm = false;
+var stream = [];
+var stream_mode = false;
 
 // sizes
 var size_i = 10;  // album lines on the index page
@@ -249,6 +251,32 @@ function object(a, i) {
 }
 
 function select(a, i) {
+
+	if (stream_mode) {
+		// display image
+		var c = "";
+
+		if (i == -1)
+			i = 0;
+
+		c += "<div id=\"image\" style=\"display: inline-block;\">\n";
+		// translate stream to album
+		if (i > 0)
+			c += block("<a href=\"javascript:select(-1, " + (i - 1) + ")\"><img class=\"arrow\" src=\"go-previous.png\" alt=\"back\" /></a>");
+
+		sa = stream[i].a;
+		si = stream[i].i;
+		c += object(sa,si);
+
+		if (i < stream.length -1)
+			c += block("<a href=\"javascript:select(-1, " + (i + 1) + ")\"><img class=\"arrow\" src=\"go-next.png\" alt=\"forward\" /></a>");
+
+		c += "<div style=\"clear: both;\"></div>\n";
+
+		document.getElementById('content').innerHTML = c;
+
+		return true;
+	}
 
 	if (a == -1) {
 		// display album list
@@ -531,6 +559,8 @@ function do_help() {
 	c += "&nbsp;<a id=\"slideshowspeed\">" + slideshowspeed + "</a>&nbsp;";
 	c += "<a title=\"+\" href=\"#\" onclick=\"slideshowspeed++; document.getElementById('slideshowspeed').innerHTML = slideshowspeed; return false;\">+</a>\n\n";
 
+	c += "stream mode            :  " + (stream_mode ? "on" : "off") + "\n\n";
+
 	c += "Video format support detected:\n";
 	c += "========\n"
 	c += "mpeg4: " + (supports_mpeg4 ? "yes" : "no") + "\n";
@@ -673,6 +703,10 @@ function keypressed(e) {
 	case 72: // h
 		do_help();
 		break;
+	case 77: // m
+		stream_mode = !stream_mode;
+		select(-1,-1);
+		break;
 	case 219: // [
 		if ((last != "index") && (last_album > 0))
 			select(--last_album, last_image);
@@ -724,16 +758,46 @@ for (x = 0; x < albums.length; x++) {
 
 // and now sort the indices.
 albums.sort(function(a, b) {
+	if (a.date == b.date)
+		return 0;
 	return ((a.date < b.date) ? 1 : -1);
 });
 
+// sort the albums internally
 for (x = 0; x < albums.length; x++) {
 	if (!albums[x].images)
 		continue;
 	albums[x].images.sort(function(a, b) {
+		if (a.date == b.date)
+			return 0;
 		return ((a.date > b.date) ? 1 : -1);
 	});
 }
+
+// construct stream
+for (x = 0; x < albums.length; x++) {
+	if (!albums[x].images)
+		continue;
+	for (y = albums[x].images.length - 1; y >= 0; y--) {
+		if (!albums[x].images[y])
+			continue;
+		stream.push({
+			album: albums[x].name,
+			owner: albums[x].owner,
+			date: albums[x].images[y].date,
+			name: albums[x].images[y].name,
+			a: x,
+			i: y
+			});
+	}
+}
+
+// sort stream
+stream.sort(function(a, b) {
+	if (a.date == b.date)
+		return 0;
+	return ((a.date < b.date) ? 1 : -1);
+});
 
 function init() {
 	load_settings();
