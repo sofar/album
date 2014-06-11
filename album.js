@@ -44,6 +44,10 @@ var size_a = 5;   // thumblines on the album page
 var size_al = 5;  // thumbs per line on the album page
 var size_n = 4;   // navigation line size either way on image page
 
+function u(name) {
+	return encodeURIComponent(name);
+}
+
 function setCookie(name, value) {
 	var date = new Date();
 	date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
@@ -81,7 +85,7 @@ function get_thumb_of(name) {
 }
 
 function imgurl(a, i, size) {
-	return "image.php?r=1&u=" + albums[a].owner + "&s=" + size + "&i=" + albums[a].name + "/" + get_thumb_of(albums[a].images[i].name);
+	return "image.php?r=1&u=" + albums[a].owner + "&s=" + size + "&i=" + u(albums[a].name) + "/" + u(get_thumb_of(albums[a].images[i].name));
 }
 
 function preload(a, i, size) {
@@ -165,7 +169,7 @@ function loadexif(o, a, i) {
 			o.title = request.responseText;
 		}
 	};
-	request.open('GET', "exif.php?u=" + albums[a].owner + "&i=" + albums[a].name + "/" + albums[a].images[i].name, true);
+	request.open('GET', "exif.php?u=" + albums[a].owner + "&i=" + u(albums[a].name + "/" + albums[a].images[i].name), true);
 	request.send();
 }
 
@@ -223,9 +227,9 @@ function object(a, i) {
 		for (z = 0; z < albums[a].images[i].alts.length; z++) {
 			alt = albums[a].images[i].alts[z];
 			if ((alt.match(".mp4") && (supports_mpeg4 || supports_h264)))
-				r += "<source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + alt + "\" type=\"video/mp4\" />";
+				r += "<source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + u(albums[a].name) + "/" + alt + "\" type=\"video/mp4\" />";
 			if ((alt.match(".ogv") && supports_ogg))
-				r += "<source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + albums[a].name + "/" + alt + "\" type=\"video/ogg\" />";
+				r += "<source src=\"image.php?s=0&r=0&u=" + albums[a].owner + "&i=" + u(albums[a].name) + "/" + alt + "\" type=\"video/ogg\" />";
 		}
 		r += "Video not playing? Click the link above to download the file and play locally.";
 		r += "</video controls>";
@@ -295,7 +299,7 @@ function select(a, i) {
 			c += block("&nbsp;");
 		c += "<div style=\"display: inline-block; float: left; width: " + ((size_il * 120) + 20 ) + "px;\">\n";
 		for (x = s_start; x < s_end; x++) {
-			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(" + x + ", -1)\">" + albums[x].name + "</a><i class=\"owner\">&nbsp;-&nbsp;" + users[albums[x].owner] + "</i></div>\n";
+			c += "<div style=\"display: inline-block;\"><a href=\"javascript:select(" + x + ", -1)\">" + u(albums[x].name) + "</a><i class=\"owner\">&nbsp;-&nbsp;" + users[albums[x].owner] + "</i></div>\n";
 			c += "<div style=\"clear: both;\"></div>\n";
 			for (y = 0; y < Math.min(size_il, albums[x].images.length); y++) {
 				c += thumb(x, y, 0);
@@ -354,7 +358,7 @@ function select(a, i) {
 
 		var t = "";
 		t += "<a href=\"javascript:select(-1, -1)\">[index]</a>&nbsp;";
-		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + albums[a].name + "]</a>&nbsp;";
+		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + u(albums[a].name) + "]</a>&nbsp;";
 		t += "( " + (s_start + 1) + " - " + s_end + " / " + albums[a].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
@@ -412,8 +416,8 @@ function select(a, i) {
 
 		var t = "";
 		t += "<a href=\"javascript:select(-1, -1)\">[index]</a>&nbsp;";
-		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + albums[a].name + "]</a>&nbsp;";
-		t += "<a href=\"/image.php?u=" + albums[a].owner + "&r=0&s=0&i=" + albums[a].name + "/" + albums[a].images[i].name + "\">[" + albums[a].images[i].name + "]</a>&nbsp;";
+		t += "<a href=\"javascript:select(" + a + ", -1)\">[" + u(albums[a].name) + "]</a>&nbsp;";
+		t += "<a href=\"/image.php?u=" + albums[a].owner + "&r=0&s=0&i=" + u(albums[a].name) + "/" + albums[a].images[i].name + "\">[" + u(albums[a].images[i].name) + "]</a>&nbsp;";
 		t += "( " + (i + 1) + " / " + albums[a].images.length + " )\n";
 
 		document.getElementById('title').innerHTML = t;
