@@ -24,6 +24,9 @@
 # be included in the album. Edit it first.
 include 'config.php';
 
+header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/javascript');
+
 # add list of users and their real names.
 echo "var users = {\n";
 for ($x = 0; $x < count($users); $x++) {
@@ -110,6 +113,8 @@ for ($x = 0; $x < count($users); $x++) {
 
 			$a .= "{ name: '" . $image . "'";
 
+			$date = filemtime($d . "/" . $album . "/" . $image);
+
 			# store original date of the file
 			if (exif_imagetype($d . "/" . $album . "/" . $image) != FALSE) {
 				$exif = exif_read_data($d . "/" . $album . "/" . $image, 0, true);
@@ -123,10 +128,6 @@ for ($x = 0; $x < count($users); $x++) {
 						$date = strtotime($exif['EXIF']['DateTimeOriginal']);
 					}
 				}
-			}
-
-			if (!isset($date)) {
-				$date = filemtime($d . "/" . $album . "/" . $image);
 			}
 
 			if (isset($date)) {
@@ -161,6 +162,8 @@ for ($x = 0; $x < count($users); $x++) {
 				$a .= ", ";
 			else
 				$a .= " ";
+
+			$a .= "\n";
 		}
 		closedir($ih);
 
