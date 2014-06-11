@@ -109,7 +109,7 @@ $size = $_GET['s'];
 
 $resample = $_GET['r'];
 
-$image = $_GET['i'];
+$image = utf8_decode(urldecode($_GET['i']));
 
 if (isset($_GET['u']))
 	$user = $_GET['u'];
@@ -127,9 +127,9 @@ $home = $pw['dir'];
 
 # passtrhru unsized?
 if ($ext == 'thm')
-	$obj = $cache_base . "/" . $user . "/" . $image;
+	$obj = escapeshellcmd($cache_base . "/" . $user . "/" . $image);
 else
-	$obj = $home . "/album/" . $image;
+	$obj = escapeshellcmd($home . "/album/" . $image);
 if ($size == 0) {
 	if (file_exists($obj))
 		pass_file_and_exit($obj);
