@@ -27,6 +27,8 @@
 
 include 'config.php';
 
+header('Content-Type: text/html; charset=utf-8');
+
 $fields = array (
 	"FILE.FileName" => "Filename",
 	"EXIF.ExifImageWidth" => "Width",
@@ -58,7 +60,7 @@ $home = $pw['dir'];
 
 $obj = $home . "/album/" . $image;
 
-echo "Path: " . $image . "\n";
+echo "Path: " . escapeshellarg($image) . "\n";
 echo "Owner: " . $pw['gecos'] . "\n\n";
 
 if (preg_match('/[.][jJ][pP][gG]$/', $obj)) {
@@ -74,6 +76,8 @@ if (preg_match('/[.][jJ][pP][gG]$/', $obj)) {
 	foreach ($output as $key => $val)
 		echo $key . ": " . $val . "\n";
 } else {
+	$m = filemtime($obj);
+	echo "Date: " . strftime("%Y-%m-%d %H:%M:%S\n", $m);
 	echo "The image contains no usable EXIV metadata\n";
 }
 
