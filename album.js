@@ -194,7 +194,7 @@ function thumb(a, i, s) {
 
 function fsz() {
 	// For really large displays, display the native format
-	if ((document.body.clientWidth > 1200) && (document.body.clientHeight > 1200))
+	if ((document.body.clientWidth > 1000) && (document.body.clientHeight > 1000))
 		return 0;
 	return 800;
 }
